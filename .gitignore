@@ -1,0 +1,153 @@
+# This file is used to ignore files which are generated
+# ----------------------------------------------------------------------------
+
+*~
+*.autosave
+*.a
+*.core
+*.moc
+*.o
+*.obj
+*.orig
+*.rej
+*.so
+*.so.*
+*_pch.h.cpp
+*_resource.rc
+*.qm
+.#*
+*.*#
+core
+!core/
+tags
+.DS_Store
+.directory
+*.debug
+Makefile*
+*.prl
+*.app
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+Thumbs.db
+*.res
+*.rc
+/.qmake.cache
+/.qmake.stash
+
+# qtcreator generated files
+*.pro.user*
+*.qbs.user*
+CMakeLists.txt.user*
+
+# xemacs temporary files
+*.flc
+
+# Vim temporary files
+.*.swp
+
+# Visual Studio generated files
+*.ib_pdb_index
+*.idb
+*.ilk
+*.pdb
+*.sln
+*.suo
+*.vcproj
+*vcproj.*.*.user
+*.ncb
+*.sdf
+*.opensdf
+*.vcxproj
+*vcxproj.*
+
+# MinGW generated files
+*.Debug
+*.Release
+
+# Python byte code
+*.pyc
+
+# Binaries
+# --------
+*.dll
+*.exe
+
+# Directories with generated files
+.moc/
+.obj/
+.pch/
+.rcc/
+.uic/
+/build*/
+
+# Archivos de depuración y perfiles
+*.idb
+*.pdb
+*.ilk
+*.aps
+*.ncb
+*.opendb
+*.sdf
+*.cachefile
+*.gcno
+*.gcda
+*.gcov
+
+# ========================================
+# Qt
+# ========================================
+*.pro.user
+*.pro.user.*
+*.qmake.stash
+*.qmake.cache
+*.qbs.user
+*.qbs.user.*
+*.qmlproject.user
+*.qmlproject.user.*
+
+# Compilación de Qt Creator
+/.qmake.stash
+/.qmake.cache
+/.qtc_clangd
+/.qtcreator
+*.autosave
+*.qmlc
+*.jsc
+
+# Directorios de build
+build*/
+*/build-*/
+
+# ========================================
+# CMake
+# ========================================
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+_compile_commands.json
+CMakeUserPresets.json
+CTestTestfile.cmake
+
+# ========================================
+# IDEs
+# ========================================
+
+# Visual Studio Code
+.vscode/
+
+# CLion / JetBrains
+.idea/
+
+# Otros temporales
+*.swp
+*.bak
+*.tmp
+*.log
+*.DS_Store
+Thumbs.db
