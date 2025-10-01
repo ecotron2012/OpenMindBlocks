@@ -7,30 +7,20 @@
     <x>0</x>
     <y>0</y>
     <width>1200</width>
-    <height>922</height>
+    <height>733</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QColumnView" name="blockGrid">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>500</y>
-      <width>771</width>
-      <height>71</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QGraphicsView" name="graphicsView">
+   <widget class="QGraphicsView" name="programCanvas">
     <property name="geometry">
      <rect>
       <x>20</x>
       <y>0</y>
-      <width>771</width>
-      <height>451</height>
+      <width>1151</width>
+      <height>361</height>
      </rect>
     </property>
    </widget>

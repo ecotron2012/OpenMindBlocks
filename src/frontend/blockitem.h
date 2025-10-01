@@ -3,6 +3,7 @@
 
 #include <QGraphicsObject>
 #include <QPointer>
+#include <qevent.h>
 
 class BlockItem : public QGraphicsObject {
     Q_OBJECT
@@ -18,6 +19,10 @@ public:
     BlockItem* right() const { return m_right; }
     void attachRight(BlockItem* child);   // conecta this → child
     void detachRight();                   // rompe conexión con el de abajo
+	bool isFullyBridged() const {
+    return (hasLeftKnob ? (m_left  != nullptr) : true)
+        && (hasRightKnob? (m_right != nullptr) : true);
+	}
 
     // Conectores (en coords locales)
     QPointF rightConnector() const;         // donde se engancha otro por arriba
@@ -30,6 +35,7 @@ protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* ev) override;
     void mouseMoveEvent(QGraphicsSceneMouseEvent* ev) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* ev) override;
+    void dropEvent(QGraphicsSceneDragDropEvent * ev) override;
     QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
 
 private:
@@ -38,6 +44,7 @@ private:
     void moveChainBy(QPointF delta); // mueve este bloque y todo lo que tenga debajo
     void updateChainZ(qreal baseZ);
 	BlockItem* leftmost();
+void checkCollision();
 
 private:
     QPixmap m_skin;
@@ -47,6 +54,7 @@ private:
 
 	bool hasLeftKnob;
 	bool hasRightKnob;
+    bool m_previewSnap = false;   // verde mientras hay candidato cerca
 
     QPointer<BlockItem> m_left;
     QPointer<BlockItem> m_right;

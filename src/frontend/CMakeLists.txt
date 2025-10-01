@@ -23,6 +23,10 @@ set(PROJECT_SOURCES
         resources.qrc
         blockitem.cpp
         blockitem.h
+	dragwidget.cpp
+	dragwidget.h
+	programcanvas.cpp
+	programcanvas.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
