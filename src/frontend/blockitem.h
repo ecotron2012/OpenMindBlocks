@@ -1,0 +1,58 @@
+#ifndef BLOCKITEM_H
+#define BLOCKITEM_H
+
+#include <QGraphicsObject>
+#include <QPointer>
+
+class BlockItem : public QGraphicsObject {
+    Q_OBJECT
+public:
+    explicit BlockItem(const QPixmap& skin, bool hasLeftKnob, bool hasRightKnob, QGraphicsItem* parent=nullptr);
+
+    QRectF boundingRect() const override;
+    QPainterPath shape() const override;
+    void paint(QPainter* p, const QStyleOptionGraphicsItem* opt, QWidget* w) override;
+
+    // Encadenamiento vertical
+    BlockItem* left() const { return m_left; }
+    BlockItem* right() const { return m_right; }
+    void attachRight(BlockItem* child);   // conecta this → child
+    void detachRight();                   // rompe conexión con el de abajo
+
+    // Conectores (en coords locales)
+    QPointF rightConnector() const;         // donde se engancha otro por arriba
+    QPointF leftConnector() const;      // para engancharse debajo de otro
+
+    // Apariencia
+    void setSkin(const QPixmap& px);
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent* ev) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent* ev) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* ev) override;
+    QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
+
+private:
+    // búsqueda de candidato para snap
+    BlockItem* findSnapCandidate(qreal maxDistPx = 18.0) const;
+    void moveChainBy(QPointF delta); // mueve este bloque y todo lo que tenga debajo
+    void updateChainZ(qreal baseZ);
+	BlockItem* leftmost();
+
+private:
+    QPixmap m_skin;
+    QSizeF  m_size;           // tamaño de “cuerpo” rectangular del bloque
+    qreal   m_radius = 12.0;  // radio de la perilla lateral (solo visual)
+    qreal   m_gap    = 6.0;   // separación vertical entre bloques encajados
+
+	bool hasLeftKnob;
+	bool hasRightKnob;
+
+    QPointer<BlockItem> m_left;
+    QPointer<BlockItem> m_right;
+
+    QPointF m_dragStartScene;
+    QPointF m_grabOffset;
+};
+
+#endif // BLOCKITEM_H

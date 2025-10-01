@@ -17,6 +17,11 @@ pwd = os.getenv("PASS")
 def hello_world():
     return "<p>Hello, World!</p>"
 
+@app.route("/run_program")
+def run_program():
+    # TODO:
+    return
+
 def OnExitApp():
     # ssh.close()   
     print("cerrando aplicacion...")
