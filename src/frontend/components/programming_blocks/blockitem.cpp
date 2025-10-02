@@ -19,7 +19,7 @@ BlockItem::BlockItem(const QPixmap& skin, bool hasLeftKnob, bool hasRightKnob, Q
     // Si no hay skin, define tamaño base; si hay, úsalo
     m_size = m_skin.isNull() ? QSizeF(160, 80) : m_skin.size();
 
-    setFlags(ItemIsMovable | ItemIsSelectable | ItemSendsGeometryChanges);
+    setFlags( ItemIsSelectable | ItemSendsGeometryChanges);
     setAcceptHoverEvents(true);
     setZValue(1.0);
 }
@@ -118,8 +118,8 @@ void BlockItem::attachRight(BlockItem* child) {
     // alinear
     const QPointF childLeftScene = child->mapToScene(child->leftConnector());
     const QPointF thisRightScene = this->mapToScene(this->rightConnector());
-    const QPointF delta = (thisRightScene + QPointF(m_gap, 0)) - childLeftScene;
-    child->moveBy(delta.x(), delta.y());
+    const QPointF delta = (thisRightScene /*+ QPointF(m_gap, 0)*/) - childLeftScene;
+    child->moveBy(delta.x() - 28, delta.y());
 
     // repintar ambos por cambio de estado
     this->update();
@@ -156,7 +156,7 @@ void BlockItem::mouseMoveEvent(QGraphicsSceneMouseEvent* ev) {
 
     // mover SIEMPRE desde el nodo raíz
     BlockItem* root = leftmost();
-    root->moveChainBy(delta);
+    // root->moveChainBy(delta);
 
     // preview verde si hay candidato cerca
     BlockItem* candidate = findSnapCandidate();
@@ -180,8 +180,8 @@ void BlockItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* ev) {
         for (BlockItem* cur = this; cur; cur = cur->m_right)
             if (cur == candidate) { candidate = nullptr; break; }
 
-        if (candidate && candidate->hasRightKnob && this->hasLeftKnob)
-            candidate->attachRight(this);
+        // if (candidate && candidate->hasRightKnob && this->hasLeftKnob)
+        //     candidate->attachRight(this);
     }
 
     // apaga el preview y repinta

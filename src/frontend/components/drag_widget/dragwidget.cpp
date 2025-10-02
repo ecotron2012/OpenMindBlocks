@@ -1,5 +1,4 @@
 #include "dragwidget.h"
-#include "blockitem.h"
 #include <QApplication>
 #include <QDrag>
 #include <QLabel>

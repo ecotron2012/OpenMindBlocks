@@ -1,8 +1,9 @@
 #ifndef PROGRAMCANVAS_H
 #define PROGRAMCANVAS_H
 
-#include "blockitem.h"
+#include "components/programming_blocks/blockitem.h"
 #include <QGraphicsView>
+#include <qevent.h>
 #include <qgraphicsview.h>
 
 class ProgramCanvas : public QGraphicsView {
@@ -21,9 +22,11 @@ protected:
   void dragMoveEvent(QDragMoveEvent *event) override;
   void dropEvent(QDropEvent *event) override;
   void startDrag(Qt::DropActions supportedActions);
+  void resizeEvent(QResizeEvent *event) override;
 
   int m_PieceSize;
   BlockItem *startingPiece;
+  BlockItem *lastPiece;
 };
 
 #endif

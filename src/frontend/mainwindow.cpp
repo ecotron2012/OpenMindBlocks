@@ -1,6 +1,5 @@
 #include "mainwindow.h"
-#include "blockitem.h"
-#include "dragwidget.h"
+#include "components/drag_widget/dragwidget.h"
 #include "programcanvas.h"
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
@@ -38,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   view->setRenderHint(QPainter::Antialiasing, true);
   view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-  view->setDragMode(QGraphicsView::RubberBandDrag);
+  // view->setDragMode(QGraphicsView::RubberBandDrag);
   view->setScene(scene);
 
   // QPixmap skin(":/blocks/start_program.png"); // tu PNG (transparente);

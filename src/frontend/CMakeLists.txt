@@ -21,13 +21,18 @@ set(PROJECT_SOURCES
         mainwindow.ui
         ${TS_FILES}
         resources.qrc
-        blockitem.cpp
-        blockitem.h
-	dragwidget.cpp
-	dragwidget.h
-	programcanvas.cpp
-	programcanvas.h
+        programcanvas.cpp
+        programcanvas.h
 )
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+set(FRONTEND_SOURCES
+    components/drag_widget/dragwidget.cpp
+    components/drag_widget/dragwidget.h
+    components/programming_blocks/blockitem.h
+    components/programming_blocks/blockitem.cpp
+)
+
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
@@ -35,7 +40,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(frontend
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        blockitem.h blockitem.cpp
+        ${FRONTEND_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET frontend APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
