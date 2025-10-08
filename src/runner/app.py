@@ -4,7 +4,7 @@ import os
 import subprocess
 import paramiko
 import atexit
-from engine import prims
+from engine import prims, compile_runtime
 
 app = Flask(__name__)
 
@@ -35,9 +35,72 @@ def run_program():
 
 @app.route("/test")
 def test():
+    program = prims.prims["start"]() + "\n"
+    test_program = {
+        "program": [{
+            "name": "move_fwd",
+            "params": {}
+        },
+        {
+            "name": "move_bwd",
+            "params": {}
+        },
+        {
+            "name": "move_bwd",
+            "params": {}
+        },
+        {
+            "name": "if_cond",
+            "params": {
+                    # TODO: cond debe ser un condicional ligado a los sensores de colores
+                    "cond": {"name": "color_sensor", "value": prims.colors["red"]},
+                    "body": [
+                    {
+                        "name": "move_fwd",
+                        "params": {}
+                    },
+                    {
+                        "name": "move_bwd",
+                        "params": {}
+                    },
+                    ],
+            }
+            
+        },
+        {
+            "name": "while_cond",
+            "params": {
+                    "cond": {"name": "n_times", "value": 4},
+                    "body": [
+                    {
+                        "name": "move_fwd",
+                        "params": {}
+                    },
+                    {
+                        "name": "move_bwd",
+                        "params": {}
+                    },
+                    {
+                        "name": "move_bwd",
+                        "params": {}
+                    },
+                    ],
+        }
+                    }
+        ]}
+    result = compile_runtime.compile(test_program.get("program"))
+    final_program = program + result
+    print(f"Resultado de compilacion: {result}")
+    run_program(final_program)
+    return "<p>Testing stuff on your EV3....</p>"
+
+def OnExitApp():
+    ssh.close()   
+    print("cerrando aplicacion...")
+
+def run_program(program):
     sftp = ssh.open_sftp()
     ssh.exec_command("rm ~/tmp")
-    program = prims.prims["start"]() + "\n" + prims.prims["move_fwd"]()
     try:
         sftp.stat(f"/home/{user}/tmp")
     except FileExistsError:
@@ -48,10 +111,5 @@ def test():
     stdin, stdout, stderr = ssh.exec_command("brickrun -r -- pybricks-micropython ~/tmp/program.py")
     print(stdout.read().decode(), stderr.read().decode())
     sftp.close()
-    return "<p>Testing stuff on your EV3....</p>"
-
-def OnExitApp():
-    ssh.close()   
-    print("cerrando aplicacion...")
 
 atexit.register(OnExitApp)

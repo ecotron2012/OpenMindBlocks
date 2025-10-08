@@ -1,14 +1,19 @@
+from textwrap import dedent, indent
+
+# --------PROGRAMMING BLOCKS---------------------- #
+
 def start_program():
     imports = """#!/usr/bin/env pybricks-micropython
 from pybricks.hubs import EV3Brick
-from pybricks.ev3devices import Motor
-from pybricks.parameters import Port
+from pybricks.ev3devices import Motor, ColorSensor
+from pybricks.parameters import Port, Color
 from pybricks.robotics import DriveBase
 
 ev3 = EV3Brick()
 
 left_motor = Motor(Port.B)
 right_motor = Motor(Port.C)
+color_sensor = ColorSensor(Port.S1)
 
 robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=75)
     """
@@ -26,9 +31,75 @@ robot.straight(-100)
     """
     return inst
 
+def if_block(cond, body):
+    indented = indent(body, "        ")
+    inst = f"""
+while True:
+    if {cond}:
+        {indented}
+        break
+    """
+    return inst
+
+def while_block(cond, step, body):
+    indented_body = indent(body, "        ")
+    indented_step = indent(step, "    ")
+    inst = f"""
+i = 0
+while {cond}:
+    {indented_body}
+    {indented_step}
+    """
+    return inst
+
+def if_cond(cond, body):
+    print(f"Condiciones: {cond}")
+    cond_code = conds[cond["name"]](cond[ "value" ])
+    code = if_block(cond_code, body)
+    return code
+
+def while_cond(cond, body):
+    # Must Be named "n_times"
+    print(f"Condiciones: {cond}")
+    cond_code, step = conds[cond["name"]](cond["value"])
+    code = while_block(cond_code, step, body)
+    return code
+
+
+# --------CONDITIONAL BLOCKS---------------------- #
+
+# Create the conditional sentence required
+def color_sensor(color, equal=True):
+    cond = f"""(color_sensor.color() == {color}) == {equal}"""
+    return cond
+
+def n_times(n):
+    cond = f"""i < {n}"""
+    step = f"""i += 1"""
+    return cond, step
+
+colors = {
+    "red": "Color.RED",
+    "black": "Color.BLACK",
+    "blue": "Color.BLUE",
+    "green": "Color.GREEN",
+    "yellow": "Color.YELLOW",
+    "white": "Color.WHITE",
+    "brown": "Color.BROWN",
+    "orange": "Color.ORANGE",
+    "purple": "Color.PURPLE",
+}
+
+conds = {
+    "color_sensor":color_sensor,
+    "n_times": n_times,
+}
+
 prims = {
     "start": start_program,
     "move_fwd": move_fwd,
-    "move_bwd": move_bwd
+    "move_bwd": move_bwd,
+    "if_cond": if_cond,
+    "while_cond": while_cond
 }
 
