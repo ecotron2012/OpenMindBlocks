@@ -1,38 +1,47 @@
 #include "dragwidget.h"
+#include "../programming_blocks/blockitem.h"
+#include "../preview_blocks/startprogramprev.h"
+#include "../preview_blocks/stopprogramprev.h"
+#include "../preview_blocks/movebwdprev.h"
+#include "../preview_blocks/movefwdprev.h"
 #include <QApplication>
 #include <QDrag>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QVBoxLayout>
 #include <QLabel>
 #include <QMimeData>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPoint>
 #include <QWidget>
+#include <nlohmann/json.hpp> // incluir el header principal
 #include <qnamespace.h>
+#include <qpixmap.h>
+using json = nlohmann::json; // alias de conveniencia
 DragWidget::DragWidget(QWidget *parent) : QFrame(parent) {
   setMinimumSize(200, 100);
   setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
-  setAcceptDrops(true);
 
-  QLabel *boatIcon = new QLabel(this);
-  boatIcon->setPixmap(QPixmap(":/blocks/start_program.png")
-                          .scaledToHeight(80, Qt::SmoothTransformation));
+  StartProgramPrev *boatIcon = new StartProgramPrev(this);
   boatIcon->move(10, 10);
   boatIcon->show();
   boatIcon->setAttribute(Qt::WA_DeleteOnClose);
 
-  QLabel *carIcon = new QLabel(this);
-  carIcon->setPixmap(QPixmap(":/blocks/move_forward.png")
-                         .scaledToHeight(80, Qt::SmoothTransformation));
+  MoveFwdPrev *carIcon = new MoveFwdPrev(this);
   carIcon->move(100, 10);
   carIcon->show();
   carIcon->setAttribute(Qt::WA_DeleteOnClose);
 
-  QLabel *houseIcon = new QLabel(this);
-  houseIcon->setPixmap(QPixmap(":/blocks/move_backward.png")
-                           .scaledToHeight(80, Qt::SmoothTransformation));
+  MoveBwdPrev *houseIcon = new MoveBwdPrev(this);
   houseIcon->move(190, 10);
   houseIcon->show();
   houseIcon->setAttribute(Qt::WA_DeleteOnClose);
+
+  StopProgramPrev *stopBlock = new StopProgramPrev(this);
+  stopBlock->move(280, 10);
+  stopBlock->show();
+  stopBlock->setAttribute(Qt::WA_DeleteOnClose);
 }
 void DragWidget::dragEnterEvent(QDragEnterEvent *event) {
   if (event->mimeData()->hasFormat("image/x-puzzle-piece")) {

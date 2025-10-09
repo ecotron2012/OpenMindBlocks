@@ -6,6 +6,12 @@
 #include <QMimeData>
 #include <qlogging.h>
 #include <qpoint.h>
+#include <vector>
+
+using namespace std;
+
+#include <nlohmann/json.hpp> // incluir el header principal
+using json = nlohmann::json; // alias de conveniencia
 
 ProgramCanvas::ProgramCanvas(int width, int height, QWidget *parent)
     : QGraphicsView(parent), m_PieceSize(80), startingPiece(nullptr) {
@@ -32,7 +38,7 @@ void ProgramCanvas::addPiece(const QPixmap &pixmap, const QPoint &location) {
     return;
 
   // Aquí puedes usar tu BlockItem en lugar de un pixmap plano
-  BlockItem *piece = new BlockItem(pixmap, true, true);
+  BlockItem *piece = new BlockItem(pixmap, true, true, this->pieceAmount, "start_program", json({}));
   piece->setFlags(QGraphicsItem::ItemIsMovable |
                   QGraphicsItem::ItemIsSelectable);
   scene()->addItem(piece);
@@ -48,6 +54,10 @@ void ProgramCanvas::addPiece(const QPixmap &pixmap, const QPoint &location) {
     lastPiece->attachRight(piece);
     lastPiece = piece;
   }
+
+  // Add BlockItem to pieces array
+  this->pieces.push_back(piece);
+  this->pieceAmount++;
 }
 
 void ProgramCanvas::dragEnterEvent(QDragEnterEvent *event) {
@@ -94,4 +104,20 @@ void ProgramCanvas::dropEvent(QDropEvent *event) {
 void ProgramCanvas::startDrag(Qt::DropActions supportedActions) {
   Q_UNUSED(supportedActions);
   qDebug() << "Start drag from ProgramCanvas (no implementado aún)";
+}
+
+void ProgramCanvas::deleteAt(int pos){
+	this->pieces.erase(this->pieces.begin() + pos);
+	this->pieceAmount--;
+	// update positions of the rest of the pieces
+	for(BlockItem* block: this->pieces){
+		int position = block->getPosition();
+		if (position >= pos) {
+			block->updatePosition(position - 1);
+		}
+	}
+}
+
+void ProgramCanvas::runProgram(){
+
 }

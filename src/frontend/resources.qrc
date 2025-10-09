@@ -3,5 +3,6 @@
         <file alias="start_program.png">assets/programming_blocks/start_program.png</file>
         <file alias="move_forward.png">assets/programming_blocks/move_forward.png</file>
         <file alias="move_backward.png">assets/programming_blocks/move_backward.png</file>
+        <file alias="stop_program.png">assets/programming_blocks/stop_program.png</file>
     </qresource>
 </RCC>

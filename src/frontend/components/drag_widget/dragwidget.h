@@ -2,6 +2,11 @@
 #include <QWidget>
 #include <qpoint.h>
 #include <qtmetamacros.h>
+#include <vector>
+
+#include "../../components/programming_blocks/blockitem.h"
+
+using namespace std;
 
 class DragWidget : public QFrame
 {
@@ -12,6 +17,7 @@ public:
 
 private:
 	QPoint m_pressPos;
+	vector<BlockItem*> blocks;
 protected:
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
