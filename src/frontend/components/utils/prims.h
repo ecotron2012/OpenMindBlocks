@@ -20,3 +20,4 @@ json color_sensor(string color);
 json n_times(int n);
 
 extern const unordered_map<string, function<json(const json&)>> prims;
+

@@ -4,8 +4,11 @@
 #include <QDragEnterEvent>
 #include <QGraphicsScene>
 #include <QMimeData>
+#include <memory>
 #include <qlogging.h>
+#include <qobject.h>
 #include <qpoint.h>
+#include <utils/blockfactory.h>
 #include <vector>
 
 using namespace std;
@@ -33,12 +36,13 @@ void ProgramCanvas::resizeEvent(QResizeEvent *event) {
   scene()->setSceneRect(QRectF(QPointF(0, 0), viewport()->size()));
 }
 
-void ProgramCanvas::addPiece(const QPixmap &pixmap, const QPoint &location) {
+void ProgramCanvas::addPiece(const QString &name, const QPoint &location) {
   if (!scene())
     return;
 
   // Aquí puedes usar tu BlockItem en lugar de un pixmap plano
-  BlockItem *piece = new BlockItem(pixmap, true, true, this->pieceAmount, "start_program", json({}));
+  BlockItem* piece =
+      BLOCK_FACTORY.at(name.toUtf8().constData())(json::object());
   piece->setFlags(QGraphicsItem::ItemIsMovable |
                   QGraphicsItem::ItemIsSelectable);
   scene()->addItem(piece);
@@ -88,11 +92,12 @@ void ProgramCanvas::dropEvent(QDropEvent *event) {
   QPixmap pixmap;
   QPoint offset;
   QPoint position = QPoint(0, 250);
-  dataStream >> pixmap >> offset;
+  QString name;
+  dataStream >> pixmap >> offset >> name;
 
   qDebug() << "Position del evento: " << event->position().toPoint();
 
-  addPiece(pixmap,
+  addPiece(name,
            // event->position().toPoint() - offset);
            position);
 
@@ -106,18 +111,16 @@ void ProgramCanvas::startDrag(Qt::DropActions supportedActions) {
   qDebug() << "Start drag from ProgramCanvas (no implementado aún)";
 }
 
-void ProgramCanvas::deleteAt(int pos){
-	this->pieces.erase(this->pieces.begin() + pos);
-	this->pieceAmount--;
-	// update positions of the rest of the pieces
-	for(BlockItem* block: this->pieces){
-		int position = block->getPosition();
-		if (position >= pos) {
-			block->updatePosition(position - 1);
-		}
-	}
+void ProgramCanvas::deleteAt(int pos) {
+  this->pieces.erase(this->pieces.begin() + pos);
+  this->pieceAmount--;
+  // update positions of the rest of the pieces
+  for (BlockItem *block : this->pieces) {
+    int position = block->getPosition();
+    if (position >= pos) {
+      block->updatePosition(position - 1);
+    }
+  }
 }
 
-void ProgramCanvas::runProgram(){
-
-}
+void ProgramCanvas::runProgram() {}

@@ -5,6 +5,7 @@
 #include <QGraphicsView>
 #include <qevent.h>
 #include <qgraphicsview.h>
+#include <qobject.h>
 #include <vector>
 using namespace std;
 
@@ -13,7 +14,7 @@ class ProgramCanvas : public QGraphicsView {
 
 public:
   explicit ProgramCanvas(int width, int height, QWidget *parent = nullptr);
-  void addPiece(const QPixmap &pixmap, const QPoint &location);
+  void addPiece(const QString &name, const QPoint &location);
   void deleteAt(int pos);
   void render();
   void runProgram();
@@ -39,6 +40,7 @@ protected:
   BlockItem *startingPiece;
   BlockItem *lastPiece;
   vector<BlockItem *> pieces;
+
 };
 
 #endif

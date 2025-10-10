@@ -1,23 +1,26 @@
 #include "dragwidget.h"
-#include "../programming_blocks/blockitem/blockitem.h"
-#include "../preview_blocks/startprogramprev.h"
-#include "../preview_blocks/stopprogramprev.h"
 #include "../preview_blocks/movebwdprev.h"
 #include "../preview_blocks/movefwdprev.h"
+#include "../preview_blocks/startprogramprev.h"
+#include "../preview_blocks/stopprogramprev.h"
+#include "../programming_blocks/blockitem/blockitem.h"
+#include "components/preview_blocks/base/previewblockbase.h"
 #include <QApplication>
 #include <QDrag>
 #include <QGraphicsScene>
 #include <QGraphicsView>
-#include <QVBoxLayout>
 #include <QLabel>
 #include <QMimeData>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPoint>
+#include <QVBoxLayout>
 #include <QWidget>
 #include <nlohmann/json.hpp> // incluir el header principal
 #include <qnamespace.h>
+#include <qobject.h>
 #include <qpixmap.h>
+using namespace std;
 using json = nlohmann::json; // alias de conveniencia
 DragWidget::DragWidget(QWidget *parent) : QFrame(parent) {
   setMinimumSize(200, 100);
@@ -133,18 +136,19 @@ void DragWidget::mouseMoveEvent(QMouseEvent *event) {
     return;
 
   // encuentra el QLabel bajo el cursor
-  QLabel *child = qobject_cast<QLabel *>(childAt(m_pressPos));
+  PreviewBlockBase *child = qobject_cast<PreviewBlockBase *>(childAt(m_pressPos));
   if (!child || !child->pixmap())
     return;
 
   // OJO en Qt6: pixmap() devuelve const QPixmap*, hay que desreferenciar
   QPixmap pixmap = child->pixmap();
+  QString name = QString::fromStdString(child->getName());
 
   // empaqueta datos (pixmap + offset)
   QByteArray itemData;
   QDataStream dataStream(&itemData, QIODevice::WriteOnly);
   const QPoint offset = m_pressPos - child->pos();
-  dataStream << pixmap << offset;
+  dataStream << pixmap << offset << name;
 
   auto *mimeData = new QMimeData;
   mimeData->setData("image/x-puzzle-piece", itemData);
