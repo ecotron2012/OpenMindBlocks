@@ -4,7 +4,7 @@
 #include <qtmetamacros.h>
 #include <vector>
 
-#include "../../components/programming_blocks/blockitem.h"
+#include "../../components/programming_blocks/blockitem/blockitem.h"
 
 using namespace std;
 

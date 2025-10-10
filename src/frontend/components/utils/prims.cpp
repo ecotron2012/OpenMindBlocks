@@ -1,5 +1,6 @@
-#include <unordered_map>
+#include "prims.h"
 #include <functional>
+#include <unordered_map>
 
 #include <nlohmann/json.hpp> // incluir el header principal
 using json = nlohmann::json; // alias de conveniencia
@@ -54,11 +55,11 @@ json n_times(int n) {
   return j;
 }
 
-unordered_map<string, function<json()>> prims {
-	{"move_fwd", move_fwd},
-	{"move_bwd", move_bwd},
-	{"if_cond", if_cond},
-	{"while_cond", while_cond},
-	{"color_sensor", color_sensor},
-	{"n_times", n_times},
+const unordered_map<string, function<json(const json &)>> prims = {
+    {"move_fwd", [](const json &) { return move_fwd(); }},
+    {"move_bwd", [](const json&){ return move_bwd(); }},
+    {"if_cond", [](const json&){return if_cond(); }},
+    {"while_cond", [](const json&){ return while_cond(); }},
+    {"color_sensor", [](const json& a) { return color_sensor(a.value("color", string())); }},
+    {"n_times", [](const json& a) { return n_times(a.value("n", 1)); }},
 };

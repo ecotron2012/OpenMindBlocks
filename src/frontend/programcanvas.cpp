@@ -1,5 +1,5 @@
 #include "programcanvas.h"
-#include "components/programming_blocks/blockitem.h"
+#include "components/programming_blocks/blockitem/blockitem.h"
 #include <QDebug>
 #include <QDragEnterEvent>
 #include <QGraphicsScene>

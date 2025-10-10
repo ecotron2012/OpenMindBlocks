@@ -26,25 +26,8 @@ set(PROJECT_SOURCES
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-set(FRONTEND_SOURCES
-    components/drag_widget/dragwidget.cpp
-    components/drag_widget/dragwidget.h
-    components/programming_blocks/blockitem.h
-    components/programming_blocks/blockitem.cpp
-    components/json_converter/jsonconverter.h
-    components/json_converter/jsonconverter.cpp
-    components/preview_blocks/base/previewblockbase.cpp
-    components/preview_blocks/base/previewblockbase.h
-    components/preview_blocks/startprogramprev.h
-    components/preview_blocks/startprogramprev.cpp
-    components/preview_blocks/stopprogramprev.h
-    components/preview_blocks/stopprogramprev.cpp
-    components/preview_blocks/movefwdprev.h
-    components/preview_blocks/movefwdprev.cpp
-    components/preview_blocks/movebwdprev.h
-    components/preview_blocks/movebwdprev.cpp
-)
 
+add_subdirectory(components)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
@@ -52,7 +35,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(frontend
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        ${FRONTEND_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET frontend APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -79,11 +61,12 @@ endif()
 target_link_libraries(frontend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(frontend PRIVATE Qt6::Core Qt6::Widgets)
 
+# Agrega libreria externa json
 target_include_directories(frontend PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/extern/json/single_include
 )
 add_subdirectory(extern/json)   
-target_link_libraries(frontend PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(frontend PRIVATE nlohmann_json::nlohmann_json components)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

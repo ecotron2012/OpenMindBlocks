@@ -1,7 +1,7 @@
 #ifndef PROGRAMCANVAS_H
 #define PROGRAMCANVAS_H
 
-#include "components/programming_blocks/blockitem.h"
+#include "components/programming_blocks/blockitem/blockitem.h"
 #include <QGraphicsView>
 #include <qevent.h>
 #include <qgraphicsview.h>

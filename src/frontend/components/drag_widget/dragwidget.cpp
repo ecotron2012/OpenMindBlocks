@@ -1,5 +1,5 @@
 #include "dragwidget.h"
-#include "../programming_blocks/blockitem.h"
+#include "../programming_blocks/blockitem/blockitem.h"
 #include "../preview_blocks/startprogramprev.h"
 #include "../preview_blocks/stopprogramprev.h"
 #include "../preview_blocks/movebwdprev.h"
