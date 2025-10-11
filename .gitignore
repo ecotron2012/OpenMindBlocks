@@ -151,3 +151,76 @@ CTestTestfile.cmake
 *.log
 *.DS_Store
 Thumbs.db
+
+# Archivos de bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de Cython
+*.c
+*.so
+
+# Archivos de entorno virtual
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Archivos de configuración local
+*.ini
+*.toml
+*.yaml
+*.yml
+*.cfg
+
+# Archivos de dependencias
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Archivos de pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Archivos de cobertura de tests
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Archivos de Jupyter
+.ipynb_checkpoints
+*.ipynb
+
+# Archivos de IDEs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.swp
+*.swo
+
