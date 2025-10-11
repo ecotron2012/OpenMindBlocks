@@ -1,9 +1,6 @@
 [submodule "src/frontend/extern/json"]
 	path = src/frontend/extern/json
 	url = https://github.com/nlohmann/json.git
-[submodule "src/frontend/include/json"]
-	path = src/frontend/include/json
-	url = https://github.com/nlohmann/json.git
 [submodule "src/frontend/extern/cpr"]
 	path = src/frontend/extern/cpr
 	url = https://github.com/libcpr/cpr.git
