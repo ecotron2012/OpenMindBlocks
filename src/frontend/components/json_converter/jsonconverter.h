@@ -3,6 +3,8 @@
 
 #include "../../components/programming_blocks/blockitem/blockitem.h"
 
+#include <iostream>
+#include <mutex>
 #include <vector>
 using namespace std;
 
@@ -10,8 +12,21 @@ using namespace std;
 using json = nlohmann::json; // alias de conveniencia
 
 class JSONConverter {
+private:
+  static JSONConverter *instancePtr;
+  static mutex mtx;
+
+protected:
+  JSONConverter() {};
+  ~JSONConverter() {};
+
 public:
-  explicit JSONConverter();
+  JSONConverter(const JSONConverter &obj) = delete;
+
+  void operator=(const JSONConverter &) = delete;
+
+  static JSONConverter *getInstance();
+
   json convertCodeToJSON(vector<BlockItem *> blocks);
 };
 

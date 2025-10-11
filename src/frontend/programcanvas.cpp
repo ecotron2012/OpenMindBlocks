@@ -1,5 +1,6 @@
 #include "programcanvas.h"
 #include "components/programming_blocks/blockitem/blockitem.h"
+#include "json_converter/jsonconverter.h"
 #include <QDebug>
 #include <QDragEnterEvent>
 #include <QGraphicsScene>
@@ -123,4 +124,8 @@ void ProgramCanvas::deleteAt(int pos) {
   }
 }
 
-void ProgramCanvas::runProgram() {}
+void ProgramCanvas::runProgram() {
+	JSONConverter* converter = JSONConverter::getInstance();
+	json programJson = converter->convertCodeToJSON(this->pieces);
+	qDebug() << programJson.dump(4);
+}

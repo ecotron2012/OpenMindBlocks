@@ -5,4 +5,10 @@
         <file alias="move_backward.png">assets/programming_blocks/move_backward.png</file>
         <file alias="stop_program.png">assets/programming_blocks/stop_program.png</file>
     </qresource>
+    <qresource prefix="/icons">
+        <file alias="arrow.png">assets/programming_blocks/symbols/arrow.png</file>
+        <file alias="start_program_symbol.png">assets/programming_blocks/symbols/start_program_symbol.png</file>
+        <file alias="stop_program.png">assets/programming_blocks/symbols/stop_program.png</file>
+        <file alias="run_program.png">assets/programming_blocks/symbols/run_program.png</file>
+    </qresource>
 </RCC>

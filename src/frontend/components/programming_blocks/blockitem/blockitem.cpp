@@ -316,3 +316,5 @@ int BlockItem::getPosition() { return this->position; }
 void BlockItem::updatePosition(int pos) { this->position = pos; }
 
 string BlockItem::getName(){return this->name;}
+
+json BlockItem::getParams(){return this->params;}

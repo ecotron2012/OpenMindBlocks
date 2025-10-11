@@ -65,8 +65,11 @@ target_link_libraries(frontend PRIVATE Qt6::Core Qt6::Widgets)
 target_include_directories(frontend PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/extern/json/single_include
 )
+
+#Add external libraries here (if using git submodule)
 add_subdirectory(extern/json)   
-target_link_libraries(frontend PRIVATE nlohmann_json::nlohmann_json components)
+add_subdirectory(extern/cpr)   
+target_link_libraries(frontend PRIVATE nlohmann_json::nlohmann_json cpr::cpr components)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

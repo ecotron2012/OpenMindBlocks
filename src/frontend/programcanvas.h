@@ -6,6 +6,7 @@
 #include <qevent.h>
 #include <qgraphicsview.h>
 #include <qobject.h>
+#include <qtmetamacros.h>
 #include <vector>
 using namespace std;
 
@@ -17,7 +18,6 @@ public:
   void addPiece(const QString &name, const QPoint &location);
   void deleteAt(int pos);
   void render();
-  void runProgram();
 
   static QString puzzleMimeType() {
     return QStringLiteral("image/x-puzzle-piece");
@@ -41,6 +41,8 @@ protected:
   BlockItem *lastPiece;
   vector<BlockItem *> pieces;
 
+public slots:
+  void runProgram();
 };
 
 #endif
