@@ -1,11 +1,39 @@
 import paramiko
 from flask import Flask, request, jsonify
 import os
+import sys
 import subprocess
 import paramiko
 import atexit
 from engine import prims, compile_runtime
+from pathlib import Path
 
+def load_env():
+    try:
+        from dotenv import load_dotenv
+    except ImportError:
+        return  # si no está, sigue con ENV del sistema
+
+    candidates = []
+
+    # 1) Si es one-file, datos empaquetados van en _MEIPASS:
+    meipass = getattr(sys, "_MEIPASS", None)
+    if meipass:
+        candidates.append(Path(meipass) / ".env")
+
+    # 2) Carpeta del ejecutable (permite .env editable junto al EXE)
+    exe_dir = Path(getattr(sys, "executable", __file__)).parent
+    candidates.append(exe_dir / ".env")
+
+    # 3) CWD por si lo lanzan desde terminal
+    candidates.append(Path.cwd() / ".env")
+
+    for p in candidates:
+        if p.is_file():
+            load_dotenv(p)        # carga y no rompe si faltan claves
+            break
+
+load_env()
 app = Flask(__name__)
 
 host = os.getenv("HOST")
@@ -42,7 +70,7 @@ def execute():
 
 @app.route("/test")
 def test():
-    program = prims.prims["start"]() + "\n"
+    program = prims.prims["start_program"]() + "\n"
     test_program = {
         "program": [{
             "name": "move_fwd",
@@ -120,3 +148,8 @@ def run_program(program):
     sftp.close()
 
 atexit.register(OnExitApp)
+
+if __name__ == "__main__":
+    # host = os.getenv("BACKEND_HOST", "127.0.0.1")
+    # port = int(os.getenv("BACKEND_PORT", "5000"))
+    app.run(host="127.0.0.1", port=5000, debug=False, use_reloader=False, threaded=True)
