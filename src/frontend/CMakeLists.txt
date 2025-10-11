@@ -68,8 +68,7 @@ target_include_directories(frontend PRIVATE
 
 #Add external libraries here (if using git submodule)
 add_subdirectory(extern/json)   
-add_subdirectory(extern/cpr)   
-target_link_libraries(frontend PRIVATE nlohmann_json::nlohmann_json cpr::cpr components)
+target_link_libraries(frontend PRIVATE nlohmann_json::nlohmann_json components)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
