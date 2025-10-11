@@ -5,16 +5,14 @@
 #include "components/programming_blocks/startprogramblock.h"
 #include "blockfactory.h"
 #include <memory>
-#include <nlohmann/json.hpp> // incluir el header principal
+#include <qjsonobject.h>
 #include <unordered_map>
-using json = nlohmann::json; // alias de conveniencia
-using namespace std;
 
-using Factory = function<BlockItem*(const json &)>;
+using Factory = function<BlockItem*(const QJsonObject &)>;
 
 const unordered_map<string, Factory> BLOCK_FACTORY = {
-    {"move_fwd", [](const json &) { return  new MoveForwardBlock(); }},
-    {"move_bwd", [](const json &) { return new MoveBackwardBlock(); }},
-    {"start_program", [](const json &) { return new StartProgramBlock(); }},
-    {"stop_program", [](const json &) { return new StopProgramBlock(); }}
+    {"move_fwd", [](const QJsonObject &) { return  new MoveForwardBlock(); }},
+    {"move_bwd", [](const QJsonObject &) { return new MoveBackwardBlock(); }},
+    {"start_program", [](const QJsonObject &) { return new StartProgramBlock(); }},
+    {"stop_program", [](const QJsonObject &) { return new StopProgramBlock(); }}
 };

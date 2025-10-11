@@ -9,20 +9,21 @@
 #include <QPainter>
 #include <QPoint>
 #include <QWidget>
+#include <QJsonObject>
 #include <qgraphicsitem.h>
 #include <qnamespace.h>
+#include <qobject.h>
 #include <qpixmap.h>
-#include <nlohmann/json.hpp> // incluir el header principal
-using json = nlohmann::json; // alias de conveniencia
-BlockItem::BlockItem(const QPixmap &skin, bool hasLeftKnob, bool hasRightKnob, int position, string name, json params,
+BlockItem::BlockItem(const QPixmap &skin, bool hasLeftKnob, bool hasRightKnob,
+                     int position, string name, QJsonObject params,
                      QGraphicsItem *parent)
     : QGraphicsObject(parent), m_skin(skin) {
   // Si no hay skin, define tamaño base; si hay, úsalo
   m_size = m_skin.isNull() ? QSizeF(160, 80) : m_skin.size();
 
   this->position = position;
-	this->name = name;
-	this->params = params;
+  this->name = name;
+  this->params = params;
 
   setFlags(ItemIsSelectable | ItemSendsGeometryChanges);
   setAcceptHoverEvents(true);
@@ -315,6 +316,6 @@ int BlockItem::getPosition() { return this->position; }
 
 void BlockItem::updatePosition(int pos) { this->position = pos; }
 
-string BlockItem::getName(){return this->name;}
+string BlockItem::getName() { return this->name; }
 
-json BlockItem::getParams(){return this->params;}
+QJsonObject BlockItem::getParams() { return this->params; }

@@ -1,17 +1,18 @@
 #include "jsonconverter.h"
 #include "../../components/programming_blocks/blockitem/blockitem.h"
 
+#include <QJsonArray>
+#include <QJsonObject>
+#include <qjsonarray.h>
+#include <qjsondocument.h>
+#include <qjsonobject.h>
+#include <qjsonparseerror.h>
 #include <qlogging.h>
 #include <qobject.h>
 #include <qstring.h>
 #include <vector>
-using namespace std;
 
-#include <nlohmann/json.hpp> // incluir el header principal
-using json = nlohmann::json; // alias de conveniencia
-
-
-JSONConverter* JSONConverter::instancePtr{nullptr};
+JSONConverter *JSONConverter::instancePtr{nullptr};
 mutex JSONConverter::mtx;
 
 JSONConverter *JSONConverter::getInstance() {
@@ -22,17 +23,25 @@ JSONConverter *JSONConverter::getInstance() {
   return instancePtr;
 }
 
-json JSONConverter::convertCodeToJSON(vector<BlockItem *> blocks) {
-  json file = json({});
-  file["program"] = json::array();
+QJsonObject JSONConverter::convertCodeToJSON(vector<BlockItem *> blocks) {
+  QJsonObject file;
+  QJsonArray programArray;
   for (BlockItem *block : blocks) {
-    json block_element;
-    block_element["name"] = block->getName();
-    block_element["params"] = block->getParams();
-    file["program"].push_back(block_element);
+    QJsonObject block_element;
+    block_element["name"] = QString::fromStdString(block->getName());
+    QJsonObject paramsObj = block->getParams();
+
+    if (paramsObj.contains("params"))
+      block_element["params"] = paramsObj["params"];
+    else
+      block_element["params"] = QJsonObject{};
+    programArray.append(block_element);
     // TODO: add support for if and while blocks, generate conditional
     // statements
   }
-  qDebug() << QString::fromStdString(file.dump());
+  file["program"] = programArray;
+  QJsonDocument doc(file);
+  qDebug().noquote() << doc.toJson(QJsonDocument::Indented);
+
   return file;
 }

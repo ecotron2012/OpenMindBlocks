@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "components/drag_widget/dragwidget.h"
 #include "programcanvas.h"
-#include "widgets/runprogramwidget.h"
+#include <components/widgets/runprogramwidget.h>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>

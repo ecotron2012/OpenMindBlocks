@@ -2,18 +2,17 @@
 #define BLOCKITEM_H
 
 #include <QGraphicsObject>
+#include <QJsonObject>
 #include <QPointer>
 #include <qevent.h>
-
-#include <nlohmann/json.hpp> // incluir el header principal
-using json = nlohmann::json; // alias de conveniencia
+#include <qobject.h>
 
 using namespace std;
 class BlockItem : public QGraphicsObject {
   Q_OBJECT
 public:
   explicit BlockItem(const QPixmap &skin, bool hasLeftKnob, bool hasRightKnob,
-                     int position, string name, json params, QGraphicsItem *parent = nullptr);
+                     int position, string name, QJsonObject params, QGraphicsItem *parent = nullptr);
 
   QRectF boundingRect() const override;
   QPainterPath shape() const override;
@@ -39,7 +38,7 @@ public:
   int getPosition();
   void updatePosition(int pos);
   string getName();
-  json getParams();
+  QJsonObject getParams();
 
 protected:
   void mousePressEvent(QGraphicsSceneMouseEvent *ev) override;
@@ -48,10 +47,10 @@ protected:
   void dropEvent(QGraphicsSceneDragDropEvent *ev) override;
   QVariant itemChange(GraphicsItemChange change,
                       const QVariant &value) override;
-  void setParams(json p);
+  void setParams(QJsonObject p);
   int position;
   string name;
-  json params;
+  QJsonObject params;
 
 private:
   // búsqueda de candidato para snap

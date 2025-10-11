@@ -1,23 +1,21 @@
 #include <unordered_map>
 #include <functional>
+#include <QJsonObject>
 
-#include <nlohmann/json.hpp> // incluir el header principal
-using json = nlohmann::json; // alias de conveniencia
-//
 using namespace std;
 
-json move_fwd();
+QJsonObject move_fwd();
 
 
-json move_bwd();
+QJsonObject move_bwd();
 
-json if_cond();
+QJsonObject if_cond();
 
-json while_cond();
+QJsonObject while_cond();
 
-json color_sensor(string color);
+QJsonObject color_sensor(string color);
 
-json n_times(int n);
+QJsonObject n_times(int n);
 
-extern const unordered_map<string, function<json(const json&)>> prims;
+extern const unordered_map<string, function<QJsonObject(const QJsonObject&)>> prims;
 

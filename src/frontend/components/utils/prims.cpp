@@ -1,65 +1,72 @@
 #include "prims.h"
+#include <QJsonArray>
+#include <QJsonObject>
 #include <functional>
+#include <qcontainerfwd.h>
+#include <qjsonarray.h>
+#include <qjsondocument.h>
 #include <unordered_map>
 
-#include <nlohmann/json.hpp> // incluir el header principal
-using json = nlohmann::json; // alias de conveniencia
-//
 using namespace std;
 
-json move_fwd() {
-  json j;
+QJsonObject move_fwd() {
+  QJsonObject j;
   j["name"] = "move_fwd";
-  j["params"] = json::object();
+  j["params"] = QJsonObject{};
   return j;
 }
 
-json move_bwd() {
-  json j;
+QJsonObject move_bwd() {
+  QJsonObject j;
   j["name"] = "move_bwd";
-  j["params"] = json::object();
+  j["params"] = QJsonObject{};
   return j;
 }
 
-json if_cond() {
-  json j;
+QJsonObject if_cond() {
+  QJsonObject j;
   j["name"] = "if_cond";
-  json params;
-  params["cond"] = json::object();
-  params["body"] = json::array();
+  QJsonObject params;
+  params["cond"] = QJsonObject{};
+  params["body"] = QJsonArray{};
   j["params"] = params;
   return j;
 }
 
-json while_cond() {
-  json j;
+QJsonObject while_cond() {
+  QJsonObject j;
   j["name"] = "while_cond";
-  json params;
-  params["cond"] = json::object();
-  params["body"] = json::array();
+  QJsonObject params;
+  params["cond"] = QJsonObject{};
+  params["body"] = QJsonArray{};
   j["params"] = params;
   return j;
 }
 
-json color_sensor(string color) {
-  json j;
+QJsonObject color_sensor(const QString &color) {
+  QJsonObject j;
   j["name"] = "color_sensor";
   j["value"] = color;
   return j;
 }
 
-json n_times(int n) {
-  json j;
+QJsonObject n_times(int n) {
+  QJsonObject j;
   j["name"] = "n_times";
   j["value"] = n;
   return j;
 }
 
-const unordered_map<string, function<json(const json &)>> prims = {
-    {"move_fwd", [](const json &) { return move_fwd(); }},
-    {"move_bwd", [](const json&){ return move_bwd(); }},
-    {"if_cond", [](const json&){return if_cond(); }},
-    {"while_cond", [](const json&){ return while_cond(); }},
-    {"color_sensor", [](const json& a) { return color_sensor(a.value("color", string())); }},
-    {"n_times", [](const json& a) { return n_times(a.value("n", 1)); }},
+const unordered_map<string, function<QJsonObject(const QJsonObject &)>> prims =
+    {
+        {"move_fwd", [](const QJsonObject &) { return move_fwd(); }},
+        {"move_bwd", [](const QJsonObject &) { return move_bwd(); }},
+        {"if_cond", [](const QJsonObject &) { return if_cond(); }},
+        {"while_cond", [](const QJsonObject &) { return while_cond(); }},
+        {"color_sensor",
+         [](const QJsonObject &a) {
+           return color_sensor(a.value("color").toString());
+         }},
+        {"n_times",
+         [](const QJsonObject &a) { return n_times(a.value("n").toInt(1)); }},
 };

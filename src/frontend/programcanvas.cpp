@@ -1,21 +1,21 @@
 #include "programcanvas.h"
 #include "components/programming_blocks/blockitem/blockitem.h"
-#include "json_converter/jsonconverter.h"
+#include "components/json_converter/jsonconverter.h"
 #include <QDebug>
 #include <QDragEnterEvent>
 #include <QGraphicsScene>
 #include <QMimeData>
 #include <memory>
+#include <qjsondocument.h>
 #include <qlogging.h>
 #include <qobject.h>
 #include <qpoint.h>
+#include <qurl.h>
 #include <utils/blockfactory.h>
 #include <vector>
+#include <components/http/httprequest.h>
 
 using namespace std;
-
-#include <nlohmann/json.hpp> // incluir el header principal
-using json = nlohmann::json; // alias de conveniencia
 
 ProgramCanvas::ProgramCanvas(int width, int height, QWidget *parent)
     : QGraphicsView(parent), m_PieceSize(80), startingPiece(nullptr) {
@@ -43,7 +43,7 @@ void ProgramCanvas::addPiece(const QString &name, const QPoint &location) {
 
   // Aquí puedes usar tu BlockItem en lugar de un pixmap plano
   BlockItem* piece =
-      BLOCK_FACTORY.at(name.toUtf8().constData())(json::object());
+      BLOCK_FACTORY.at(name.toUtf8().constData())(QJsonObject{});
   piece->setFlags(QGraphicsItem::ItemIsMovable |
                   QGraphicsItem::ItemIsSelectable);
   scene()->addItem(piece);
@@ -125,7 +125,10 @@ void ProgramCanvas::deleteAt(int pos) {
 }
 
 void ProgramCanvas::runProgram() {
+	HTTPRequest* req = new HTTPRequest(QUrl(QString::fromStdString("http://127.0.0.1:5000/execute")), this);
 	JSONConverter* converter = JSONConverter::getInstance();
-	json programJson = converter->convertCodeToJSON(this->pieces);
-	qDebug() << programJson.dump(4);
+	QJsonObject programJson = converter->convertCodeToJSON(this->pieces);
+	QJsonDocument doc(programJson);
+	qDebug().noquote() << doc.toJson(QJsonDocument::Indented);
+	req->postRequest(programJson);
 }

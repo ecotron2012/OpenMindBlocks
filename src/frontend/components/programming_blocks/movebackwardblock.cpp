@@ -1,14 +1,13 @@
 #include "components/programming_blocks/movebackwardblock.h"
-#include "movebackwardblock.h"
 #include "components/programming_blocks/blockitem/blockitem.h"
-#include <nlohmann/json.hpp> // incluir el header principal
+#include "movebackwardblock.h"
 #include <qgraphicsitem.h>
+#include <qjsonobject.h>
 #include <qnamespace.h>
 #include <qpixmap.h>
-using json = nlohmann::json; // alias de conveniencia
 
 MoveBackwardBlock::MoveBackwardBlock(QGraphicsItem *parent)
     : BlockItem(QPixmap(":/blocks/move_backward.png")
                     .scaledToHeight(80, Qt::SmoothTransformation),
-                true, true, 0, "move_bwd", {{"params", json::object()}},
-                parent) {}
+                true, true, 0, "move_bwd",
+                QJsonObject{{"params", QJsonObject{}}}, parent) {}

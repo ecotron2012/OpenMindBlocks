@@ -1,5 +1,5 @@
 import paramiko
-from flask import Flask
+from flask import Flask, request, jsonify
 import os
 import subprocess
 import paramiko
@@ -28,10 +28,17 @@ def add_line():
     ssh.exec_command("brickrun -r -- pybricks-micropython ./main.py")
     return "<p>Hello, World!</p>"
 
-@app.route("/run_program")
-def run_program():
-    # TODO:
-    return
+@app.route("/execute", methods=['POST'])
+def execute():
+    if request.method != 'POST':
+        return jsonify({"result": "Invalid request type..."}), 400
+    else:
+        code_sequence = request.get_json().get("program") or {}
+        compiled_code = compile_runtime.compile(code_sequence)
+        run_program(compiled_code)
+        return jsonify({"result": "Compiling and running your code..."}), 200
+
+
 
 @app.route("/test")
 def test():

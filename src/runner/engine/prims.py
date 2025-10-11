@@ -19,6 +19,9 @@ robot = DriveBase(left_motor, right_motor, wheel_diameter=55.5, axle_track=75)
     """
     return imports
 
+def stop_program():
+    return ""
+
 def move_fwd():
     inst = """
 robot.straight(100)
@@ -96,7 +99,8 @@ conds = {
 }
 
 prims = {
-    "start": start_program,
+    "start_program": start_program,
+    "stop_program": stop_program,
     "move_fwd": move_fwd,
     "move_bwd": move_bwd,
     "if_cond": if_cond,

@@ -4,8 +4,9 @@
 #include "components/programming_blocks/moveforwardblock.h"
 #include "components/programming_blocks/startprogramblock.h"
 #include <QString>
+#include <QJsonObject>
 using namespace std;
-using Factory = function<BlockItem*(const json&)>;
+using Factory = function<BlockItem*(const QJsonObject&)>;
 class BlockFactory{
 public:
 	virtual BlockItem* createBlock() = 0;

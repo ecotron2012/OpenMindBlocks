@@ -16,12 +16,10 @@
 #include <QPoint>
 #include <QVBoxLayout>
 #include <QWidget>
-#include <nlohmann/json.hpp> // incluir el header principal
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpixmap.h>
 using namespace std;
-using json = nlohmann::json; // alias de conveniencia
 DragWidget::DragWidget(QWidget *parent) : QFrame(parent) {
   setMinimumSize(200, 100);
   setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);

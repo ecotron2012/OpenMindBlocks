@@ -5,11 +5,9 @@
 
 #include <iostream>
 #include <mutex>
+#include <qobject.h>
 #include <vector>
 using namespace std;
-
-#include <nlohmann/json.hpp> // incluir el header principal
-using json = nlohmann::json; // alias de conveniencia
 
 class JSONConverter {
 private:
@@ -27,7 +25,7 @@ public:
 
   static JSONConverter *getInstance();
 
-  json convertCodeToJSON(vector<BlockItem *> blocks);
+  QJsonObject convertCodeToJSON(vector<BlockItem *> blocks);
 };
 
 #endif
