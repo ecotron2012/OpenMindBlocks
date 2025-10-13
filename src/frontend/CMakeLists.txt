@@ -28,6 +28,7 @@ set(PROJECT_SOURCES
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(components)
+set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/AppIcon.rc")
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
@@ -35,6 +36,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(frontend
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+	${app_icon_resource_windows}
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET frontend APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -60,6 +62,7 @@ endif()
 
 target_link_libraries(frontend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(frontend PRIVATE Qt6::Core Qt6::Widgets)
+
 
 # Agrega libreria externa json
 target_include_directories(frontend PRIVATE

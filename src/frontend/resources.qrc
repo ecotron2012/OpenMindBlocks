@@ -11,4 +11,8 @@
         <file alias="stop_program.png">assets/programming_blocks/symbols/stop_program.png</file>
         <file alias="run_program.png">assets/programming_blocks/symbols/run_program.png</file>
     </qresource>
+    <qresource prefix="/appIcons">
+        <file alias="AppIcon.png">assets/AppIcon.png</file>
+        <file alias="AppIcon.ico">AppIcon.ico</file>
+    </qresource>
 </RCC>
