@@ -73,55 +73,55 @@ def test():
     program = prims.prims["start_program"]() + "\n"
     test_program = {
         "program": [{
+            "name": "turn_right",
+            "params": {}
+        },
+        # {
+        #     "name": "turn_right",
+        #     "params": {}
+        # },
+        {
             "name": "move_fwd",
             "params": {}
         },
-        {
-            "name": "move_bwd",
-            "params": {}
-        },
-        {
-            "name": "move_bwd",
-            "params": {}
-        },
-        {
-            "name": "if_cond",
-            "params": {
-                    # TODO: cond debe ser un condicional ligado a los sensores de colores
-                    "cond": {"name": "color_sensor", "value": prims.colors["red"]},
-                    "body": [
-                    {
-                        "name": "move_fwd",
-                        "params": {}
-                    },
-                    {
-                        "name": "move_bwd",
-                        "params": {}
-                    },
-                    ],
-            }
-            
-        },
-        {
-            "name": "while_cond",
-            "params": {
-                    "cond": {"name": "n_times", "value": 4},
-                    "body": [
-                    {
-                        "name": "move_fwd",
-                        "params": {}
-                    },
-                    {
-                        "name": "move_bwd",
-                        "params": {}
-                    },
-                    {
-                        "name": "move_bwd",
-                        "params": {}
-                    },
-                    ],
-        }
-                    }
+        # {
+        #     "name": "if_cond",
+        #     "params": {
+        #             # TODO: cond debe ser un condicional ligado a los sensores de colores
+        #             "cond": {"name": "color_sensor", "value": prims.colors["red"]},
+        #             "body": [
+        #             {
+        #                 "name": "move_fwd",
+        #                 "params": {}
+        #             },
+        #             {
+        #                 "name": "move_bwd",
+        #                 "params": {}
+        #             },
+        #             ],
+        #     }
+        #
+        # },
+        # {
+        #     "name": "while_cond",
+        #     "params": {
+        #             "cond": {"name": "n_times", "value": 4},
+        #             "body": [
+        #             {
+        #                 "name": "move_fwd",
+        #                 "params": {}
+        #             },
+        #             {
+        #                 "name": "move_bwd",
+        #                 "params": {}
+        #             },
+        #             {
+        #                 "name": "move_bwd",
+        #                 "params": {}
+        #             },
+        #             ],
+        # }
+                    # }
         ]}
     result = compile_runtime.compile(test_program.get("program"))
     final_program = program + result

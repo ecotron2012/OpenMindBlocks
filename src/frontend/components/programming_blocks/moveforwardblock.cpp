@@ -5,7 +5,5 @@
 #include <qpixmap.h>
 
 MoveForwardBlock::MoveForwardBlock(QGraphicsItem *parent)
-    : BlockItem(QPixmap(":/blocks/move_forward.png")
-                    .scaledToHeight(80, Qt::SmoothTransformation),
-                true, true, 0, "move_fwd", QJsonObject{{"params", QJsonObject{}}},
-                parent) {}
+    : BlockItem(QPixmap(":/blocks/move_forward.png"), true, true, 0, "move_fwd",
+                QJsonObject{{"params", QJsonObject{}}}, parent) {}

@@ -3,8 +3,9 @@
 #include "../preview_blocks/movefwdprev.h"
 #include "../preview_blocks/startprogramprev.h"
 #include "../preview_blocks/stopprogramprev.h"
-#include "../programming_blocks/blockitem/blockitem.h"
 #include "components/preview_blocks/base/previewblockbase.h"
+#include <components/preview_blocks/turnleftprev.h>
+#include <components/preview_blocks/turnrightprev.h>
 #include <QApplication>
 #include <QDrag>
 #include <QGraphicsScene>
@@ -20,29 +21,40 @@
 #include <qobject.h>
 #include <qpixmap.h>
 using namespace std;
+
 DragWidget::DragWidget(QWidget *parent) : QFrame(parent) {
-  setMinimumSize(200, 100);
+  setMinimumSize(200, 180);
   setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
 
-  StartProgramPrev *boatIcon = new StartProgramPrev(this);
-  boatIcon->move(10, 10);
-  boatIcon->show();
-  boatIcon->setAttribute(Qt::WA_DeleteOnClose);
+  StartProgramPrev *startProgram = new StartProgramPrev(this);
+  startProgram->move(10, 10);
+  startProgram->show();
+  startProgram->setAttribute(Qt::WA_DeleteOnClose);
 
-  MoveFwdPrev *carIcon = new MoveFwdPrev(this);
-  carIcon->move(100, 10);
-  carIcon->show();
-  carIcon->setAttribute(Qt::WA_DeleteOnClose);
+  MoveFwdPrev *moveForward = new MoveFwdPrev(this);
+  moveForward->move(180, 10);
+  moveForward->show();
+  moveForward->setAttribute(Qt::WA_DeleteOnClose);
 
-  MoveBwdPrev *houseIcon = new MoveBwdPrev(this);
-  houseIcon->move(190, 10);
-  houseIcon->show();
-  houseIcon->setAttribute(Qt::WA_DeleteOnClose);
+  MoveBwdPrev *moveBackward = new MoveBwdPrev(this);
+  moveBackward->move(350, 10);
+  moveBackward->show();
+  moveBackward->setAttribute(Qt::WA_DeleteOnClose);
 
   StopProgramPrev *stopBlock = new StopProgramPrev(this);
-  stopBlock->move(280, 10);
+  stopBlock->move(520, 10);
   stopBlock->show();
   stopBlock->setAttribute(Qt::WA_DeleteOnClose);
+
+  TurnLeftPrev *turnLeft = new TurnLeftPrev(this);
+  turnLeft->move(690, 10);
+  turnLeft->show();
+  turnLeft->setAttribute(Qt::WA_DeleteOnClose);
+
+  TurnRightPrev *turnRight = new TurnRightPrev(this);
+  turnRight->move(860, 10);
+  turnRight->show();
+  turnRight->setAttribute(Qt::WA_DeleteOnClose);
 }
 void DragWidget::dragEnterEvent(QDragEnterEvent *event) {
   if (event->mimeData()->hasFormat("image/x-puzzle-piece")) {

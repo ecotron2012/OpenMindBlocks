@@ -10,6 +10,5 @@
 using namespace std;
 
 StopProgramPrev::StopProgramPrev(QWidget *parent)
-    : PreviewBlockBase("stop_program", QPixmap(":/blocks/stop_program.png")
-                .scaledToHeight(80, Qt::SmoothTransformation), parent) {
+    : PreviewBlockBase("stop_program", QPixmap(":/blocks/stop_program.png"), parent) {
 }

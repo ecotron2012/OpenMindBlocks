@@ -3,13 +3,13 @@
 #include <QDrag>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
+#include <QJsonObject>
 #include <QLabel>
 #include <QMimeData>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPoint>
 #include <QWidget>
-#include <QJsonObject>
 #include <qgraphicsitem.h>
 #include <qnamespace.h>
 #include <qobject.h>
@@ -17,7 +17,7 @@
 BlockItem::BlockItem(const QPixmap &skin, bool hasLeftKnob, bool hasRightKnob,
                      int position, string name, QJsonObject params,
                      QGraphicsItem *parent)
-    : QGraphicsObject(parent), m_skin(skin) {
+    : QGraphicsObject(parent), m_skin(skin.scaledToHeight(160, Qt::SmoothTransformation)) {
   // Si no hay skin, define tamaño base; si hay, úsalo
   m_size = m_skin.isNull() ? QSizeF(160, 80) : m_skin.size();
 
@@ -86,29 +86,30 @@ void BlockItem::paint(QPainter *p, const QStyleOptionGraphicsItem *,
 
   // 2) Overlay de estado (rojo si separada, verde si unida o si hay
   // previewSnap)
-  const bool ok = isFullyBridged() || m_previewSnap;
-
-  const QColor stroke = ok ? QColor(0, 180, 0, 220) : QColor(200, 0, 0, 220);
-  const QColor fill = ok ? QColor(0, 180, 0, 40) : QColor(200, 0, 0, 40);
-
-  // mismo contorno que el cuerpo (sin las perillas), para que se vea “por
-  // encima”
-  QRectF body(0, 0, m_size.width(), m_size.height());
-  body.adjust(1, 1, -1, -1); // margen visual
-
-  p->setPen(QPen(stroke, 3));
-  p->setBrush(fill);
-  p->drawRoundedRect(body, 12, 12);
-
-  // (opcional) guías de conectores cuando está seleccionado
-  if (isSelected()) {
-    p->setPen(QPen(QColor(245, 243, 0, 120), 1, Qt::DashLine));
-    p->setBrush(Qt::NoBrush);
-    if (hasLeftKnob)
-      p->drawEllipse(leftConnector(), 10, 10);
-    if (hasRightKnob)
-      p->drawEllipse(rightConnector(), 10, 10);
-  }
+  // Use for debug purposes
+  // const bool ok = isFullyBridged() || m_previewSnap;
+  //
+  // const QColor stroke = ok ? QColor(0, 180, 0, 220) : QColor(200, 0, 0, 220);
+  // const QColor fill = ok ? QColor(0, 180, 0, 40) : QColor(200, 0, 0, 40);
+  //
+  // // mismo contorno que el cuerpo (sin las perillas), para que se vea “por
+  // // encima”
+  // QRectF body(0, 0, m_size.width(), m_size.height());
+  // body.adjust(1, 1, -1, -1); // margen visual
+  //
+  // p->setPen(QPen(stroke, 3));
+  // p->setBrush(fill);
+  // p->drawRoundedRect(body, 12, 12);
+  //
+  // // (opcional) guías de conectores cuando está seleccionado
+  // if (isSelected()) {
+  //   p->setPen(QPen(QColor(245, 243, 0, 120), 1, Qt::DashLine));
+  //   p->setBrush(Qt::NoBrush);
+  //   if (hasLeftKnob)
+  //     p->drawEllipse(leftConnector(), 10, 10);
+  //   if (hasRightKnob)
+  //     p->drawEllipse(rightConnector(), 10, 10);
+  // }
 }
 
 // Conectores tipo Scratch Jr.: centrados, arriba/abajo
@@ -145,7 +146,7 @@ void BlockItem::attachRight(BlockItem *child) {
   const QPointF thisRightScene = this->mapToScene(this->rightConnector());
   const QPointF delta =
       (thisRightScene /*+ QPointF(m_gap, 0)*/) - childLeftScene;
-  child->moveBy(delta.x() - 28, delta.y());
+  child->moveBy(delta.x() - 45, delta.y());
 
   // repintar ambos por cambio de estado
   this->update();

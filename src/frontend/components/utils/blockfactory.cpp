@@ -3,6 +3,8 @@
 #include "components/programming_blocks/movebackwardblock.h"
 #include "components/programming_blocks/moveforwardblock.h"
 #include "components/programming_blocks/startprogramblock.h"
+#include "components/programming_blocks/turnleftblock.h"
+#include "components/programming_blocks/turnrightblock.h"
 #include "blockfactory.h"
 #include <memory>
 #include <qjsonobject.h>
@@ -14,5 +16,7 @@ const unordered_map<string, Factory> BLOCK_FACTORY = {
     {"move_fwd", [](const QJsonObject &) { return  new MoveForwardBlock(); }},
     {"move_bwd", [](const QJsonObject &) { return new MoveBackwardBlock(); }},
     {"start_program", [](const QJsonObject &) { return new StartProgramBlock(); }},
-    {"stop_program", [](const QJsonObject &) { return new StopProgramBlock(); }}
+    {"stop_program", [](const QJsonObject &) { return new StopProgramBlock(); }},
+    {"turn_left", [](const QJsonObject &) { return new TurnLeftBlock(); }},
+    {"turn_right", [](const QJsonObject &) { return new TurnRightBlock(); }},
 };

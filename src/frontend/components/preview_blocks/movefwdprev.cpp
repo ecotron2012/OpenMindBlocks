@@ -10,6 +10,5 @@
 using namespace std;
 
 MoveFwdPrev::MoveFwdPrev(QWidget *parent)
-    : PreviewBlockBase("move_fwd", QPixmap(":/blocks/move_forward.png")
-                .scaledToHeight(80, Qt::SmoothTransformation), parent) {
+    : PreviewBlockBase("move_fwd", QPixmap(":/blocks/move_forward.png"), parent) {
 }

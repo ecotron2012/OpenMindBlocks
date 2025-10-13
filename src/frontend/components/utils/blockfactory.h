@@ -3,6 +3,8 @@
 #include "components/programming_blocks/movebackwardblock.h"
 #include "components/programming_blocks/moveforwardblock.h"
 #include "components/programming_blocks/startprogramblock.h"
+#include "components/programming_blocks/turnleftblock.h"
+#include "components/programming_blocks/turnrightblock.h"
 #include <QString>
 #include <QJsonObject>
 using namespace std;
@@ -39,6 +41,20 @@ class MoveBackwardBlockFactory: public BlockFactory{
 public:
 	MoveBackwardBlock* createBlock() override{
 		return new MoveBackwardBlock();
+	}
+};
+
+class TurnLeftBlockFactory: public BlockFactory{
+public:
+	TurnLeftBlock* createBlock() override{
+		return new TurnLeftBlock();
+	}
+};
+
+class TurnRightBlockFactory: public BlockFactory{
+public:
+	TurnRightBlock* createBlock() override{
+		return new TurnRightBlock();
 	}
 };
 

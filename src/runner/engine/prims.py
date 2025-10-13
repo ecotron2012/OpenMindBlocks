@@ -55,6 +55,18 @@ while {cond}:
     """
     return inst
 
+def turn_left():
+    inst = """
+robot.turn(-130)
+"""
+    return inst
+
+def turn_right():
+    inst = """
+robot.turn(130)
+"""
+    return inst
+
 def if_cond(cond, body):
     print(f"Condiciones: {cond}")
     cond_code = conds[cond["name"]](cond[ "value" ])
@@ -104,6 +116,8 @@ prims = {
     "move_fwd": move_fwd,
     "move_bwd": move_bwd,
     "if_cond": if_cond,
-    "while_cond": while_cond
+    "while_cond": while_cond,
+    "turn_left" :turn_left,
+    "turn_right": turn_right
 }
 

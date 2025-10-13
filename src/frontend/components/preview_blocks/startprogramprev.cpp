@@ -10,6 +10,5 @@
 using namespace std;
 
 StartProgramPrev::StartProgramPrev(QWidget *parent)
-    : PreviewBlockBase("start_program", QPixmap(":/blocks/start_program.png")
-                .scaledToHeight(80, Qt::SmoothTransformation), parent) {
+    : PreviewBlockBase("start_program", QPixmap(":/blocks/start_program.png"), parent) {
 }

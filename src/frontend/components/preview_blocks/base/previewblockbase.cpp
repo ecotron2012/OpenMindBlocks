@@ -8,7 +8,7 @@ using namespace std;
 PreviewBlockBase::PreviewBlockBase(const string &name, const QPixmap &image,
                                    QWidget *parent) : QLabel(parent) {
   this->name = name;
-  this->setPixmap(image);
+  this->setPixmap(image.scaledToHeight(160, Qt::SmoothTransformation));
 }
 
 string PreviewBlockBase::getName() { return this->name; }

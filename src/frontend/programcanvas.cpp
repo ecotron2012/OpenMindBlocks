@@ -96,7 +96,7 @@ void ProgramCanvas::dropEvent(QDropEvent *event) {
   QString name;
   dataStream >> pixmap >> offset >> name;
 
-  qDebug() << "Position del evento: " << event->position().toPoint();
+  qDebug() << "Position del evento: " << event->position().toPoint() << "Offset: " << offset;
 
   addPiece(name,
            // event->position().toPoint() - offset);
