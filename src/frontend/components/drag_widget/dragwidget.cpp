@@ -16,13 +16,20 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <components/preview_blocks/ifcolorprev.h>
+#include <components/preview_blocks/prevblockfactory.h>
 #include <components/preview_blocks/turnleftprev.h>
 #include <components/preview_blocks/turnrightprev.h>
+#include <qjsonobject.h>
 #include <qlogging.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpixmap.h>
 using namespace std;
+
+static const std::vector<std::string> order = {
+    "start_program_prev",  "move_fwd_prev",    "move_bwd_prev",
+    "turn_left_prev",      "turn_right_prev",  "if_color_prev",
+    "cond_block_end_prev", "stop_program_prev"};
 
 DragWidget::DragWidget(QWidget *parent) : QFrame(parent) {
   setMinimumSize(200, 200);
@@ -30,52 +37,16 @@ DragWidget::DragWidget(QWidget *parent) : QFrame(parent) {
   QPoint blockPos = QPoint(10, 0);
   int spacing = 190;
 
-  StartProgramPrev *startProgram = new StartProgramPrev(this);
-  startProgram->move(blockPos);
-  startProgram->show();
-  startProgram->setAttribute(Qt::WA_DeleteOnClose);
-
-  blockPos.setX(blockPos.x() + spacing);
-
-  MoveFwdPrev *moveForward = new MoveFwdPrev(this);
-  moveForward->move(blockPos);
-  moveForward->show();
-  moveForward->setAttribute(Qt::WA_DeleteOnClose);
-
-  blockPos.setX(blockPos.x() + spacing);
-
-  MoveBwdPrev *moveBackward = new MoveBwdPrev(this);
-  moveBackward->move(blockPos);
-  moveBackward->show();
-  moveBackward->setAttribute(Qt::WA_DeleteOnClose);
-
-  blockPos.setX(blockPos.x() + spacing);
-
-  StopProgramPrev *stopBlock = new StopProgramPrev(this);
-  stopBlock->move(blockPos);
-  stopBlock->show();
-  stopBlock->setAttribute(Qt::WA_DeleteOnClose);
-
-  blockPos.setX(blockPos.x() + spacing);
-
-  TurnLeftPrev *turnLeft = new TurnLeftPrev(this);
-  turnLeft->move(blockPos);
-  turnLeft->show();
-  turnLeft->setAttribute(Qt::WA_DeleteOnClose);
-
-  blockPos.setX(blockPos.x() + spacing);
-
-  TurnRightPrev *turnRight = new TurnRightPrev(this);
-  turnRight->move(blockPos);
-  turnRight->show();
-  turnRight->setAttribute(Qt::WA_DeleteOnClose);
-
-  blockPos.setX(blockPos.x() + spacing);
-
-  IfColorPrev *ifColor = new IfColorPrev(this);
-  ifColor->move(blockPos);
-  ifColor->show();
-  ifColor->setAttribute(Qt::WA_DeleteOnClose);
+  for (auto &key : order) {
+    if (auto it = PREV_BLOCK_FACTORY.find(key);
+        it != PREV_BLOCK_FACTORY.end()) {
+      PreviewBlockBase *block = it->second(this);
+      block->move(blockPos);
+      block->show();
+      block->setAttribute(Qt::WA_DeleteOnClose);
+      blockPos.setX(blockPos.x() + spacing);
+    }
+  }
 }
 void DragWidget::dragEnterEvent(QDragEnterEvent *event) {
   if (event->mimeData()->hasFormat("image/x-puzzle-piece")) {
