@@ -81,7 +81,7 @@ const unordered_map<string, function<QJsonObject(const QJsonObject &)>> prims =
         {"while_cond", [](const QJsonObject &) { return while_cond(); }},
         {"color_sensor",
          [](const QJsonObject &a) {
-           return color_sensor(a.value("color").toString());
+           return color_sensor(( a.value("color") ).toString());
          }},
         {"n_times",
          [](const QJsonObject &a) { return n_times(a.value("n").toInt(1)); }},

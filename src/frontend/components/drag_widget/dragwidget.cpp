@@ -4,8 +4,6 @@
 #include "../preview_blocks/startprogramprev.h"
 #include "../preview_blocks/stopprogramprev.h"
 #include "components/preview_blocks/base/previewblockbase.h"
-#include <components/preview_blocks/turnleftprev.h>
-#include <components/preview_blocks/turnrightprev.h>
 #include <QApplication>
 #include <QDrag>
 #include <QGraphicsScene>
@@ -17,44 +15,67 @@
 #include <QPoint>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <components/preview_blocks/ifcolorprev.h>
+#include <components/preview_blocks/turnleftprev.h>
+#include <components/preview_blocks/turnrightprev.h>
+#include <qlogging.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpixmap.h>
 using namespace std;
 
 DragWidget::DragWidget(QWidget *parent) : QFrame(parent) {
-  setMinimumSize(200, 180);
+  setMinimumSize(200, 200);
   setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
+  QPoint blockPos = QPoint(10, 0);
+  int spacing = 190;
 
   StartProgramPrev *startProgram = new StartProgramPrev(this);
-  startProgram->move(10, 10);
+  startProgram->move(blockPos);
   startProgram->show();
   startProgram->setAttribute(Qt::WA_DeleteOnClose);
 
+  blockPos.setX(blockPos.x() + spacing);
+
   MoveFwdPrev *moveForward = new MoveFwdPrev(this);
-  moveForward->move(180, 10);
+  moveForward->move(blockPos);
   moveForward->show();
   moveForward->setAttribute(Qt::WA_DeleteOnClose);
 
+  blockPos.setX(blockPos.x() + spacing);
+
   MoveBwdPrev *moveBackward = new MoveBwdPrev(this);
-  moveBackward->move(350, 10);
+  moveBackward->move(blockPos);
   moveBackward->show();
   moveBackward->setAttribute(Qt::WA_DeleteOnClose);
 
+  blockPos.setX(blockPos.x() + spacing);
+
   StopProgramPrev *stopBlock = new StopProgramPrev(this);
-  stopBlock->move(520, 10);
+  stopBlock->move(blockPos);
   stopBlock->show();
   stopBlock->setAttribute(Qt::WA_DeleteOnClose);
 
+  blockPos.setX(blockPos.x() + spacing);
+
   TurnLeftPrev *turnLeft = new TurnLeftPrev(this);
-  turnLeft->move(690, 10);
+  turnLeft->move(blockPos);
   turnLeft->show();
   turnLeft->setAttribute(Qt::WA_DeleteOnClose);
 
+  blockPos.setX(blockPos.x() + spacing);
+
   TurnRightPrev *turnRight = new TurnRightPrev(this);
-  turnRight->move(860, 10);
+  turnRight->move(blockPos);
   turnRight->show();
   turnRight->setAttribute(Qt::WA_DeleteOnClose);
+
+  blockPos.setX(blockPos.x() + spacing);
+
+  IfColorPrev *ifColor = new IfColorPrev(this);
+  ifColor->move(blockPos);
+  ifColor->show();
+  ifColor->setAttribute(Qt::WA_DeleteOnClose);
 }
 void DragWidget::dragEnterEvent(QDragEnterEvent *event) {
   if (event->mimeData()->hasFormat("image/x-puzzle-piece")) {
@@ -146,12 +167,16 @@ void DragWidget::mouseMoveEvent(QMouseEvent *event) {
     return;
 
   // encuentra el QLabel bajo el cursor
-  PreviewBlockBase *child = qobject_cast<PreviewBlockBase *>(childAt(m_pressPos));
-  if (!child || !child->pixmap())
+  PreviewBlockBase *child =
+      qobject_cast<PreviewBlockBase *>(childAt(m_pressPos));
+  if (!child || !child->getImg()) {
+    qDebug() << "No se pudo determinar el Objeto bajo el cursor.";
+    qDebug() << childAt(m_pressPos);
     return;
+  }
 
   // OJO en Qt6: pixmap() devuelve const QPixmap*, hay que desreferenciar
-  QPixmap pixmap = child->pixmap();
+  QPixmap pixmap = child->getImg()->pixmap();
   QString name = QString::fromStdString(child->getName());
 
   // empaqueta datos (pixmap + offset)

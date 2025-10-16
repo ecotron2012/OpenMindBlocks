@@ -10,4 +10,4 @@ using namespace std;
 
 MoveBwdPrev::MoveBwdPrev(QWidget *parent)
     : PreviewBlockBase("move_bwd", QPixmap(":/blocks/move_backward.png"),
-                       parent) {}
+                       QString::fromStdString("Retroceder"), parent) {}

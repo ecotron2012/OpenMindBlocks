@@ -1,3 +1,4 @@
+import threading
 import paramiko
 from flask import Flask, request, jsonify
 import os
@@ -7,6 +8,7 @@ import paramiko
 import atexit
 from engine import prims, compile_runtime
 from pathlib import Path
+from werkzeug.serving import make_server
 
 def load_env():
     try:
@@ -128,6 +130,20 @@ def test():
     print(f"Resultado de compilacion: {result}")
     run_program(final_program)
     return "<p>Testing stuff on your EV3....</p>"
+
+# TODO: Create endpoint for shutting down server
+def shutdown_server():
+    func = exit
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+    
+# Terminate the app process
+@app.route("/shutdown", methods=['GET'])
+def shutdown():
+    ssh.close()
+    shutdown_server()
+    return "<p>Shutting down server...</p>"
 
 def OnExitApp():
     ssh.close()   

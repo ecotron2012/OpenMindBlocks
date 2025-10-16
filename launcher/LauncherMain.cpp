@@ -31,7 +31,7 @@ static void attachJobToProcess(qint64 pid) {
 }
 #endif
 
-// ============= Utilidades =============
+// ============= Utils =============
 
 static QString exeDir() {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -76,7 +76,6 @@ static QFile *openLogFile(const QString &baseName) {
   return nullptr;
 }
 
-// Escribe lineas en UTF-8
 static void writeLine(QFile *f, const QString &line) {
   if (!f)
     return;
@@ -90,7 +89,7 @@ static void writeLine(QFile *f, const QString &line) {
   ts.flush();
 }
 
-// ============= Lanzador =============
+// ============= App Launcher =============
 
 int main(int argc, char *argv[]) {
   QCoreApplication app(argc, argv);
@@ -138,7 +137,6 @@ int main(int argc, char *argv[]) {
   QString backendProg = parser.value(backendPathOpt);
   QString guiProg = parser.value(guiPathOpt);
 
-  // Resolver rutas relativas al ejecutable del launcher
   if (QDir::isRelativePath(backendProg))
     backendProg = exeDir() + QDir::separator() + backendProg;
   if (QDir::isRelativePath(guiProg))
@@ -158,10 +156,9 @@ int main(int argc, char *argv[]) {
   backend.setProgram(backendProg);
   backend.setWorkingDirectory(exeDir());
   backend.setProcessChannelMode(
-      QProcess::MergedChannels); // stdout+stderr juntos
+      QProcess::MergedChannels); 
 
 #if defined(Q_OS_WIN)
-  // Ocultar consola si backend fue compilado con consola
   backend.setCreateProcessArgumentsModifier(
       [](QProcess::CreateProcessArguments *args) {
         args->flags |= CREATE_NO_WINDOW;
@@ -183,7 +180,6 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  // Espera a que el puerto del backend esté abierto
   if (!waitForPort(host, port, startTimeout)) {
     writeLine(launcherLog.get(),
               "ERROR: backend no abrió el puerto a tiempo. Matando backend.");
@@ -193,7 +189,7 @@ int main(int argc, char *argv[]) {
   }
   writeLine(launcherLog.get(), "Backend OK: puerto arriba.");
 
-  // ========== Inicia GUI ==========
+  // ========== Launch GUI ==========
   QProcess gui;
   gui.setProgram(guiProg);
   gui.setWorkingDirectory(exeDir());
@@ -217,21 +213,17 @@ int main(int argc, char *argv[]) {
     return 3;
   }
 
-  // Espera a que la GUI cierre
   gui.waitForFinished(-1);
   writeLine(launcherLog.get(), "GUI finalizó. Cerrando backend...");
 
-  // ========== Apagado ordenado del backend ==========
+  // ========== Backend shutdown ==========
 
-  // 1) Si tu backend expone /shutdown, intenta un cierre limpio aquí.
-  //    Ejemplo simple (opcional) con QProcess + curl embebido:
   // QProcess curl; curl.start("curl", QStringList() << "-s" << "-X" << "POST"
   //                                                 <<
-  //                                                 QString("http://%1:%2/shutdown").arg(host).arg(port));
+  //                                                 QString("http://localhost:5000/shutdown").arg(host).arg(port));
   // curl.waitForFinished(1500);
 
-  // 2) Señales de proceso
-  backend.terminate(); // pide cierre limpio
+  backend.terminate();
   if (backend.waitForFinished(gracefulMs)) {
     writeLine(launcherLog.get(), "Backend terminó con terminate().");
     return 0;
@@ -249,7 +241,7 @@ int main(int argc, char *argv[]) {
   if (backend.state() != QProcess::NotRunning) {
     writeLine(launcherLog.get(),
               "Backend aún vivo tras terminate(); enviando kill().");
-    backend.kill(); // a la mala
+    backend.kill(); 
     backend.waitForFinished(2000);
   }
 

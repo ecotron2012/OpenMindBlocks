@@ -13,7 +13,7 @@ QJsonObject if_cond();
 
 QJsonObject while_cond();
 
-QJsonObject color_sensor(string color);
+QJsonObject color_sensor(const QString& color);
 
 QJsonObject n_times(int n);
 

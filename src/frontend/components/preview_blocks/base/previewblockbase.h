@@ -5,13 +5,17 @@
 #include <qwidget.h>
 
 using namespace std;
-class PreviewBlockBase : public QLabel {
+class PreviewBlockBase : public QWidget {
   Q_OBJECT
 public:
   explicit PreviewBlockBase(const string &name, const QPixmap &image,
-                            QWidget *parent = nullptr);
+                            const QString &label, QWidget *parent = nullptr);
   string getName();
+  QLabel *getLabel();
+  QLabel *getImg();
 
 protected:
   string name;
+  QLabel *blockLabel;
+  QLabel *blockImg;
 };

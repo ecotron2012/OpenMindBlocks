@@ -10,4 +10,4 @@ using namespace std;
 
 TurnLeftPrev::TurnLeftPrev(QWidget *parent)
     : PreviewBlockBase("turn_left", QPixmap(":/blocks/turn_left.png"),
-                       parent) {}
+                       QString::fromStdString("Girar Izquierda"), parent) {}
