@@ -11,13 +11,15 @@
 #include <QPoint>
 #include <QWidget>
 #include <qgraphicsitem.h>
+#include <qjsonobject.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpixmap.h>
 BlockItem::BlockItem(const QPixmap &skin, bool hasLeftKnob, bool hasRightKnob,
                      int position, string name, QJsonObject params,
                      QGraphicsItem *parent)
-    : QGraphicsObject(parent), m_skin(skin.scaledToHeight(160, Qt::SmoothTransformation)) {
+    : QGraphicsObject(parent),
+      m_skin(skin.scaledToHeight(160, Qt::SmoothTransformation)) {
   // Si no hay skin, define tamaño base; si hay, úsalo
   m_size = m_skin.isNull() ? QSizeF(160, 80) : m_skin.size();
 
@@ -320,3 +322,5 @@ void BlockItem::updatePosition(int pos) { this->position = pos; }
 string BlockItem::getName() { return this->name; }
 
 QJsonObject BlockItem::getParams() { return this->params; }
+
+void BlockItem::setParams(QJsonObject &p) { this->params = p; }

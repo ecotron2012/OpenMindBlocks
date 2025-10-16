@@ -6,6 +6,7 @@
 #include <QString>
 #include <components/graphics/colorswatchdelegate.h>
 #include <components/utils/prims.h>
+#include <map>
 #include <qbrush.h>
 #include <qcontainerfwd.h>
 #include <qgraphicsitem.h>
@@ -13,6 +14,7 @@
 #include <qicon.h>
 #include <qjsonobject.h>
 #include <qlist.h>
+#include <qlogging.h>
 #include <qnamespace.h>
 #include <qoverload.h>
 #include <qpalette.h>
@@ -30,6 +32,19 @@ static const NamedColor cols[] = {{"Rojo", Qt::red},
                                   {"Amarillo", Qt::yellow},
                                   {"Negro", Qt::black}};
 
+static const pmr::map<const QString, const QString> colorCodes = {
+    {QString::fromStdString("#00ff00"), QString::fromStdString("green")},
+
+    {QString::fromStdString("#ff0000"), QString::fromStdString("red")},
+
+    {QString::fromStdString("#000000"), QString::fromStdString("black")},
+
+    {QString::fromStdString("#0000ff"), QString::fromStdString("blue")},
+
+    {QString::fromStdString("#ffff00"), QString::fromStdString("yellow")}
+
+};
+
 static QIcon makeSwatchIcon(const QColor &c, const QSize &sz = QSize(24, 24)) {
   QPixmap px(sz);
   px.fill(Qt::transparent);
@@ -46,9 +61,10 @@ IfColorBlock::IfColorBlock(QGraphicsItem *parent)
                 "if_color", QJsonObject{{"params", if_cond()}}, parent) {
   QJsonObject ifCondStatement = if_cond();
   QJsonObject ifCondParams = ifCondStatement["params"].toObject();
-  QJsonObject condValue = color_sensor(QString::fromStdString(""));
+  QJsonObject condValue = color_sensor(QString::fromStdString("red"));
   ifCondParams["cond"] = condValue;
   ifCondStatement["params"] = ifCondParams;
+  setParams(ifCondStatement);
   setFlag(ItemIsMovable, true);
   setFlag(ItemIsSelectable, true);
   setupCombo();
@@ -88,7 +104,16 @@ void IfColorBlock::setupCombo() {
             if (!c.isValid())
               return;
 
+            qDebug() << "Nombre del color" << m_color.name();
             m_color = c;
+            QJsonObject ifCondStatement = if_cond();
+            QJsonObject ifCondParams = ifCondStatement["params"].toObject();
+            QJsonObject condValue = color_sensor(colorCodes.at(c.name()));
+            ifCondParams["cond"] = condValue;
+            ifCondStatement["params"] = ifCondParams;
+            qDebug() << ifCondParams;
+            setParams(ifCondStatement);
+            qDebug() << "Nuevos params" << params;
 
             const QString hex = c.name(QColor::HexRgb);
             m_combo->setStyleSheet(

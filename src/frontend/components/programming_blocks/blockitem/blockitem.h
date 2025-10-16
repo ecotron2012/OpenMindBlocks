@@ -47,7 +47,7 @@ protected:
   void dropEvent(QGraphicsSceneDragDropEvent *ev) override;
   QVariant itemChange(GraphicsItemChange change,
                       const QVariant &value) override;
-  void setParams(QJsonObject p);
+  void setParams(QJsonObject &p);
   int position;
   string name;
   QJsonObject params;
