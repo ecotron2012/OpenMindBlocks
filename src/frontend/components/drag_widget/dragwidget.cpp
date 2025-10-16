@@ -36,17 +36,33 @@ DragWidget::DragWidget(QWidget *parent) : QFrame(parent) {
   setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
   QPoint blockPos = QPoint(10, 0);
   int spacing = 190;
+  int contentRight = 0;
+  int contentBottom = 0;
 
   for (auto &key : order) {
     if (auto it = PREV_BLOCK_FACTORY.find(key);
         it != PREV_BLOCK_FACTORY.end()) {
       PreviewBlockBase *block = it->second(this);
+
+      const QSize sz = block->sizeHint().isValid() ? block->sizeHint() : QSize(160, 180);
+      block->resize(sz);
       block->move(blockPos);
       block->show();
       block->setAttribute(Qt::WA_DeleteOnClose);
+      const int right  = blockPos.x() + block->width();
+      const int bottom = blockPos.y() + block->height();
+      contentRight  = std::max(contentRight, right);
+      contentBottom = std::max(contentBottom, bottom);
       blockPos.setX(blockPos.x() + spacing);
     }
   }
+  const int hMargin = 10;
+  const int vMargin = 10;
+
+  setFixedHeight(std::max(200, contentBottom + vMargin));
+  setMinimumWidth(std::max(200, contentRight + hMargin));
+
+  setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 }
 void DragWidget::dragEnterEvent(QDragEnterEvent *event) {
   if (event->mimeData()->hasFormat("image/x-puzzle-piece")) {
