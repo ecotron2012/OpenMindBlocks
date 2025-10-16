@@ -7,5 +7,5 @@
 using namespace std;
 
 CondBlockEndPrev::CondBlockEndPrev(QWidget *parent)
-    : PreviewBlockBase("cond_end", QPixmap(":/blocks/cond_block_end.png"),
+    : PreviewBlockBase("cond_block_end", QPixmap(":/blocks/cond_block_end.png"),
                        QString::fromStdString("Terminar bloque condicional"), parent) {}
