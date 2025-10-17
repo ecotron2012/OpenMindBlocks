@@ -44,7 +44,7 @@ jobs:
         shell: pwsh
         run: |
           $qtBin = "C:\Qt\${env:QT_VERSION}\mingw_64\bin"
-          $mingwBin = "C:\Qt\Tools\mingw1310_64\bin" 
+          $mingwBin = "C:\Qt\Tools\mingw1310\bin" 
           echo "QT_BIN=$qtBin" | Out-File -FilePath $env:GITHUB_ENV -Append
           echo "MINGW_BIN=$mingwBin" | Out-File -FilePath $env:GITHUB_ENV -Append
           echo $mingwBin | Out-File -FilePath $env:GITHUB_PATH -Append
