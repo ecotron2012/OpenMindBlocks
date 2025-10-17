@@ -91,7 +91,6 @@ jobs:
         working-directory: src/runner
         shell: pwsh
         run:
-          pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Package backend with PyInstaller
