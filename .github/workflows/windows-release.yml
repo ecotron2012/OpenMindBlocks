@@ -3,7 +3,7 @@ name: Windows Release
 on:
   workflow_dispatch:
   release:
-    types: [created, edited, published, prereleased]
+    types: [created, prereleased]
 
 permissions:
   contents: write
@@ -135,13 +135,6 @@ jobs:
           Get-FileHash ".\OpenMindBlocks-Setup.exe" -Algorithm SHA256 |
             ForEach-Object { $_.Hash + "  OpenMindBlocks-Setup.exe" } |
             Set-Content ".\OpenMindBlocks-Setup.sha256"
-
-      # - uses: actions/upload-artifact@v4
-      #   with:
-      #     name: windows-installer
-      #     path: |
-      #       OpenMindBlocks-Setup.exe
-      #       OpenMindBlocks-Setup.sha256
 
       - name: Attach artifacts to existing release
         uses: softprops/action-gh-release@v2
