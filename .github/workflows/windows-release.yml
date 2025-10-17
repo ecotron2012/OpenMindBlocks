@@ -43,12 +43,6 @@ jobs:
           echo "QT_BIN=$qtBin" | Out-File -FilePath $env:GITHUB_ENV -Append
           echo "$qtBin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
-      - name: Configure & build launcher (CMake MinGW)
-        working-directory: launcher   
-        run: |
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="C:/Qt/%QT_VERSION%/mingw_64" -S . -B build
-          cmake --build build --config Release
-
       - name: Build frontend 
         if: ${{ false }}   
         working-directory: src/frontend
@@ -56,10 +50,23 @@ jobs:
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="C:/Qt/%QT_VERSION%/mingw_64" -S . -B build
           cmake --build build --config Release
 
+      - name: Copy frontend.exe to APP_OUT
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:APP_OUT" | Out-Null
+          Copy-Item "$env:GITHUB_WORKSPACE\src\frontend\build\Desktop_Qt_6_9_2_MinGW_64_bit-Release\frontend.exe" `
+                    "$env:APP_OUT\frontend.exe" -Force
+
       - name: Run windeployqt on frontend.exe
         shell: pwsh
         run: |
           & "$env:QT_BIN\windeployqt.exe" --release --dir "$env:APP_OUT" "$env:APP_OUT\frontend.exe"
+
+      - name: Configure & build launcher (CMake MinGW)
+        working-directory: launcher   
+        run: |
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="C:/Qt/%QT_VERSION%/mingw_64" -S . -B build
+          cmake --build build --config Release
 
       - name: Package backend with PyInstaller
         working-directory: ${{ env.PY_DIR }}
