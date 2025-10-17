@@ -73,7 +73,7 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path "$env:APP_OUT" | Out-Null
-          Copy-Item "$env:GITHUB_WORKSPACE\src\frontend\build\Desktop_Qt_6_9_2_MinGW_64_bit-Release\frontend.exe" `
+          Copy-Item "$env:GITHUB_WORKSPACE\src\frontend\build\Release\frontend.exe" `
                     "$env:APP_OUT\frontend.exe" -Force
 
       - name: Run windeployqt on frontend.exe
