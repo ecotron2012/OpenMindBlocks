@@ -13,7 +13,7 @@ target_link_libraries(launcher PRIVATE Qt6::Core Qt6::Network)
 
 # El launcher debe terminar en la MISMA carpeta que frontend.exe
 set_target_properties(launcher PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/dist"
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/dist/release"
 )
 
 if(WIN32)
