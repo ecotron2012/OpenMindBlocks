@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Network)
 
-set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/AppIcon.rc")
+set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/AppIcon.ico")
 add_executable(launcher LauncherMain.cpp ${app_icon_resource_windows})
 target_link_libraries(launcher PRIVATE Qt6::Core Qt6::Network)
 
