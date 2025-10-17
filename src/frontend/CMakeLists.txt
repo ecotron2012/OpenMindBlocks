@@ -69,7 +69,7 @@ else()
 endif()
 
 target_link_libraries(frontend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-target_link_libraries(frontend PRIVATE Qt6::Core Qt6::Widgets)
+target_link_libraries(frontend PRIVATE Qt6::Core Qt6::Widgets Qt6::Network)
 
 
 # Agrega libreria externa json
