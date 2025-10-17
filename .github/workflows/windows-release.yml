@@ -37,8 +37,8 @@ jobs:
       - name: Install Qt via aqtinstall + MinGW
         run: |
           python -m aqt install-qt windows desktop $env:QT_VERSION $env:QT_ARCH -O $env:QT_DIR
-          python -m aqt list-tool windows desktop --arch x64
-          python -m aqt install-tool windows desktop tools_mingw1310_64 -O $env:QT_DIR
+          python -m aqt list-tool windows desktop
+          python -m aqt install-tool windows desktop tools_mingw1310 -O $env:QT_DIR
 
       - name: Set PATHs for Qt and MinGW
         shell: pwsh
