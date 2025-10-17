@@ -67,9 +67,10 @@ robot.turn(130)
 """
     return inst
 
+
 def if_cond(cond, body):
-    print(f"Condiciones: {cond}")
-    cond_code = conds[cond["name"]](cond[ "value" ])
+    print(f"Condiciones: {cond}, cuerpo: {body}")
+    cond_code = conds[cond["name"]](colors[cond[ "value" ]])
     code = if_block(cond_code, body)
     return code
 
@@ -116,6 +117,7 @@ prims = {
     "move_fwd": move_fwd,
     "move_bwd": move_bwd,
     "if_cond": if_cond,
+    "if_color": if_cond,
     "while_cond": while_cond,
     "turn_left" :turn_left,
     "turn_right": turn_right

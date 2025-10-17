@@ -1,3 +1,4 @@
+import logging
 import threading
 import paramiko
 from flask import Flask, request, jsonify
@@ -64,7 +65,9 @@ def execute():
         return jsonify({"result": "Invalid request type..."}), 400
     else:
         code_sequence = request.get_json().get("program") or {}
-        compiled_code = compile_runtime.compile(code_sequence)
+        structured_code = compile_runtime.structure_sequence(code_sequence)
+        print(f"secuencia de codigo estructurada: {structured_code}")
+        compiled_code = compile_runtime.compile(structured_code)
         run_program(compiled_code)
         return jsonify({"result": "Compiling and running your code..."}), 200
 
