@@ -1,11 +1,9 @@
 name: Windows Release
 
 on:
-  release:
-    types: [published, prereleased]
   workflow_dispatch:
-  push:
-    tags: ["v*.*.*"]   # dispara en tags tipo v1.2.3
+  release:
+    types: [created, edited, published, prereleased]
 
 permissions:
   contents: write
@@ -134,9 +132,9 @@ jobs:
       - name: Generate Checksum
         shell: pwsh
         run: |
-          Get-FileHash ".\dist\release\OpenMindBlocks-Setup.exe" -Algorithm SHA256 |
+          Get-FileHash ".\OpenMindBlocks-Setup.exe" -Algorithm SHA256 |
             ForEach-Object { $_.Hash + "  OpenMindBlocks-Setup.exe" } |
-            Set-Content ".\dist\release\OpenMindBlocks-Setup.sha256"
+            Set-Content ".\OpenMindBlocks-Setup.sha256"
 
       # - uses: actions/upload-artifact@v4
       #   with:
@@ -145,13 +143,15 @@ jobs:
       #       OpenMindBlocks-Setup.exe
       #       OpenMindBlocks-Setup.sha256
 
-      - name: Upload to GitHub Release
+      - name: Attach artifacts to existing release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.release.tag_name }}            
+          name: ${{ github.event.release.name }}                      
+          draft: ${{ github.event.release.draft }}         
+          prerelease: ${{ github.event.release.prerelease }}          
           files: |
-            dist/release/OpenMindBlocks-Setup.exe
-            dist/release/OpenMindBlocks-Setup.sha256
-          prerelease: ${{ github.event.release.prerelease }}  # ← usa el del trigger
-          draft: false
+            OpenMindBlocks-Setup.exe
+            OpenMindBlocks-Setup.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
