@@ -5,7 +5,6 @@
 #include <qpixmap.h>
 
 StartProgramBlock::StartProgramBlock(QGraphicsItem *parent)
-    : BlockItem(QPixmap(":/blocks/start_program.png")
-                    .scaledToHeight(80, Qt::SmoothTransformation),
-                false, true, 0, "start_program", QJsonObject{{"params", QJsonObject{}}},
+    : BlockItem(QPixmap(":/blocks/start_program.png"), false, true, 0,
+                "start_program", QJsonObject{{"params", QJsonObject{}}},
                 parent) {}

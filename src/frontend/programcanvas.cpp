@@ -42,6 +42,7 @@ void ProgramCanvas::addPiece(const QString &name, const QPoint &location) {
     return;
 
   // Aquí puedes usar tu BlockItem en lugar de un pixmap plano
+qDebug() << "Nombre siendo pasado: " << name;
   BlockItem* piece =
       BLOCK_FACTORY.at(name.toUtf8().constData())(QJsonObject{});
   piece->setFlags(QGraphicsItem::ItemIsMovable |
@@ -96,7 +97,7 @@ void ProgramCanvas::dropEvent(QDropEvent *event) {
   QString name;
   dataStream >> pixmap >> offset >> name;
 
-  qDebug() << "Position del evento: " << event->position().toPoint();
+  qDebug() << "Position del evento: " << event->position().toPoint() << "Offset: " << offset;
 
   addPiece(name,
            // event->position().toPoint() - offset);

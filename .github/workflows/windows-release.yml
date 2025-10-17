@@ -1,0 +1,102 @@
+name: Windows Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*.*.*"]   # dispara en tags tipo v1.2.3
+
+jobs:
+  build-win:
+    runs-on: windows-latest
+
+    env:
+      QT_VERSION: "6.9.2"
+      QT_ARCH: "win64_mingw"
+      QT_DIR: "C:/Qt"
+      APP_OUT: "${{ github.workspace }}\\dist\\release"
+      PY_DIR: "${{ github.workspace }}\\src\\runner"
+      ISS: "${{ github.workspace }}\\OpenMindBlocks.iss" 
+      # SHUTDOWN_TOKEN: "${{ secrets.SHUTDOWN_TOKEN }}"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build deps (aqt, cmake, ninja, pyinstaller)
+        run: |
+          python -m pip install --upgrade pip
+          pip install aqtinstall cmake ninja pyinstaller
+
+      - name: Install Qt via aqtinstall
+        run: |
+          python -m aqt install-qt windows desktop %QT_VERSION% %QT_ARCH% -O %QT_DIR%
+
+      - name: Add Qt bin to PATH
+        shell: pwsh
+        run: |
+          $qtBin = "C:\Qt\${env:QT_VERSION}\mingw_64\bin"
+          echo "QT_BIN=$qtBin" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "$qtBin" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+      - name: Configure & build launcher (CMake MinGW)
+        working-directory: launcher   
+        run: |
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="C:/Qt/%QT_VERSION%/mingw_64" -S . -B build
+          cmake --build build --config Release
+
+      - name: Build frontend 
+        if: ${{ false }}   
+        working-directory: src/frontend
+        run: |
+          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="C:/Qt/%QT_VERSION%/mingw_64" -S . -B build
+          cmake --build build --config Release
+
+      - name: Run windeployqt on frontend.exe
+        shell: pwsh
+        run: |
+          & "$env:QT_BIN\windeployqt.exe" --release --dir "$env:APP_OUT" "$env:APP_OUT\frontend.exe"
+
+      - name: Package backend with PyInstaller
+        working-directory: ${{ env.PY_DIR }}
+        shell: pwsh
+        run: |
+          $internal = @"
+          HOST=${{ secrets.EV3_HOST }}
+          USER=${{ secrets.EV3_USER }}
+          PASS=${{ secrets.EV3_PASS }}
+          "@
+          Set-Content -Path ".\.env" -Value $internal -Encoding UTF8
+          pyinstaller app.py --name backend --onefile --noconsole --add-data ".env;.env"
+          Copy-Item ".\dist\backend.exe" "$env:APP_OUT\backend.exe" -Force
+
+      - name: Put .env 
+        shell: pwsh
+        run: |
+          $content = @"
+          HOST=${{ secrets.EV3_HOST }}
+          USER=${{ secrets.EV3_USER }}
+          PASS=${{ secrets.EV3_PASS }}
+          "@
+          Set-Content -Path ".\dist\release\.env" -Value $content -Encoding UTF8
+
+      - name: Install Inno Setup (ISCC)
+        run: |
+          choco install innosetup --yes
+
+      - name: Compile Inno Setup script
+        shell: pwsh
+        run: |
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          & "$iscc" "/DAppVersion=${{ github.ref_name }}" "$env:ISS"
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenMindBlocks-Setup
+          path: |
+            **\OpenMindBlocks-Setup.exe

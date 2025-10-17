@@ -1,3 +1,0 @@
-[submodule "src/frontend/extern/json"]
-	path = src/frontend/extern/json
-	url = https://github.com/nlohmann/json.git

@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "components/drag_widget/dragwidget.h"
 #include "programcanvas.h"
-#include <components/widgets/runprogramwidget.h>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -9,10 +8,12 @@
 #include <QPixmap>
 #include <QStackedLayout>
 #include <QVBoxLayout>
+#include <components/widgets/runprogramwidget.h>
 #include <qboxlayout.h>
 #include <qgridlayout.h>
 #include <qnamespace.h>
 #include <qpushbutton.h>
+#include <qscrollarea.h>
 #include <qsize.h>
 #include <qsizepolicy.h>
 #include <qstackedlayout.h>
@@ -43,7 +44,14 @@ MainWindow::MainWindow(QWidget *parent)
 
   auto *drag = new DragWidget(this);
   drag->setAcceptDrops(false);
-  progUILyt->addWidget(drag);
+
+  QScrollArea *scrollArea = new QScrollArea(this);
+  scrollArea->setWidgetResizable(false);
+  scrollArea->setWidget(drag);
+  scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+  scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  scrollArea->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+  progUILyt->addWidget(scrollArea);
 
   view->setRenderHint(QPainter::Antialiasing, true);
   view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);

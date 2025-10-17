@@ -23,6 +23,20 @@ QJsonObject move_bwd() {
   return j;
 }
 
+QJsonObject turn_left() {
+  QJsonObject j;
+  j["name"] = "turn_left";
+  j["params"] = QJsonObject{};
+  return j;
+}
+
+QJsonObject turn_right() {
+  QJsonObject j;
+  j["name"] = "turn_right";
+  j["params"] = QJsonObject{};
+  return j;
+}
+
 QJsonObject if_cond() {
   QJsonObject j;
   j["name"] = "if_cond";
@@ -61,11 +75,13 @@ const unordered_map<string, function<QJsonObject(const QJsonObject &)>> prims =
     {
         {"move_fwd", [](const QJsonObject &) { return move_fwd(); }},
         {"move_bwd", [](const QJsonObject &) { return move_bwd(); }},
+        {"turn_left", [](const QJsonObject &) { return turn_left(); }},
+        {"turn_right", [](const QJsonObject &) { return turn_right(); }},
         {"if_cond", [](const QJsonObject &) { return if_cond(); }},
         {"while_cond", [](const QJsonObject &) { return while_cond(); }},
         {"color_sensor",
          [](const QJsonObject &a) {
-           return color_sensor(a.value("color").toString());
+           return color_sensor(( a.value("color") ).toString());
          }},
         {"n_times",
          [](const QJsonObject &a) { return n_times(a.value("n").toInt(1)); }},

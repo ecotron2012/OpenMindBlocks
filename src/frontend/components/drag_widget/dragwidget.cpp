@@ -3,7 +3,6 @@
 #include "../preview_blocks/movefwdprev.h"
 #include "../preview_blocks/startprogramprev.h"
 #include "../preview_blocks/stopprogramprev.h"
-#include "../programming_blocks/blockitem/blockitem.h"
 #include "components/preview_blocks/base/previewblockbase.h"
 #include <QApplication>
 #include <QDrag>
@@ -16,33 +15,54 @@
 #include <QPoint>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <components/preview_blocks/ifcolorprev.h>
+#include <components/preview_blocks/prevblockfactory.h>
+#include <components/preview_blocks/turnleftprev.h>
+#include <components/preview_blocks/turnrightprev.h>
+#include <qjsonobject.h>
+#include <qlogging.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpixmap.h>
 using namespace std;
+
+static const std::vector<std::string> order = {
+    "start_program_prev",  "move_fwd_prev",    "move_bwd_prev",
+    "turn_left_prev",      "turn_right_prev",  "if_color_prev",
+    "cond_block_end_prev", "stop_program_prev"};
+
 DragWidget::DragWidget(QWidget *parent) : QFrame(parent) {
-  setMinimumSize(200, 100);
+  setMinimumSize(200, 200);
   setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
+  QPoint blockPos = QPoint(10, 0);
+  int spacing = 190;
+  int contentRight = 0;
+  int contentBottom = 0;
 
-  StartProgramPrev *boatIcon = new StartProgramPrev(this);
-  boatIcon->move(10, 10);
-  boatIcon->show();
-  boatIcon->setAttribute(Qt::WA_DeleteOnClose);
+  for (auto &key : order) {
+    if (auto it = PREV_BLOCK_FACTORY.find(key);
+        it != PREV_BLOCK_FACTORY.end()) {
+      PreviewBlockBase *block = it->second(this);
 
-  MoveFwdPrev *carIcon = new MoveFwdPrev(this);
-  carIcon->move(100, 10);
-  carIcon->show();
-  carIcon->setAttribute(Qt::WA_DeleteOnClose);
+      const QSize sz = block->sizeHint().isValid() ? block->sizeHint() : QSize(160, 180);
+      block->resize(sz);
+      block->move(blockPos);
+      block->show();
+      block->setAttribute(Qt::WA_DeleteOnClose);
+      const int right  = blockPos.x() + block->width();
+      const int bottom = blockPos.y() + block->height();
+      contentRight  = std::max(contentRight, right);
+      contentBottom = std::max(contentBottom, bottom);
+      blockPos.setX(blockPos.x() + spacing);
+    }
+  }
+  const int hMargin = 10;
+  const int vMargin = 10;
 
-  MoveBwdPrev *houseIcon = new MoveBwdPrev(this);
-  houseIcon->move(190, 10);
-  houseIcon->show();
-  houseIcon->setAttribute(Qt::WA_DeleteOnClose);
+  setFixedHeight(std::max(200, contentBottom + vMargin));
+  setMinimumWidth(std::max(200, contentRight + hMargin));
 
-  StopProgramPrev *stopBlock = new StopProgramPrev(this);
-  stopBlock->move(280, 10);
-  stopBlock->show();
-  stopBlock->setAttribute(Qt::WA_DeleteOnClose);
+  setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 }
 void DragWidget::dragEnterEvent(QDragEnterEvent *event) {
   if (event->mimeData()->hasFormat("image/x-puzzle-piece")) {
@@ -134,12 +154,16 @@ void DragWidget::mouseMoveEvent(QMouseEvent *event) {
     return;
 
   // encuentra el QLabel bajo el cursor
-  PreviewBlockBase *child = qobject_cast<PreviewBlockBase *>(childAt(m_pressPos));
-  if (!child || !child->pixmap())
+  PreviewBlockBase *child =
+      qobject_cast<PreviewBlockBase *>(childAt(m_pressPos));
+  if (!child || !child->getImg()) {
+    qDebug() << "No se pudo determinar el Objeto bajo el cursor.";
+    qDebug() << childAt(m_pressPos);
     return;
+  }
 
   // OJO en Qt6: pixmap() devuelve const QPixmap*, hay que desreferenciar
-  QPixmap pixmap = child->pixmap();
+  QPixmap pixmap = child->getImg()->pixmap();
   QString name = QString::fromStdString(child->getName());
 
   // empaqueta datos (pixmap + offset)

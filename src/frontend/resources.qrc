@@ -4,11 +4,22 @@
         <file alias="move_forward.png">assets/programming_blocks/move_forward.png</file>
         <file alias="move_backward.png">assets/programming_blocks/move_backward.png</file>
         <file alias="stop_program.png">assets/programming_blocks/stop_program.png</file>
+        <file alias="turn_left.png">assets/programming_blocks/turn_left.png</file>
+        <file alias="turn_right.png">assets/programming_blocks/turn_right.png</file>
+        <file alias="cond_block_middle.png">assets/programming_blocks/cond_block_middle.png</file>
+        <file alias="if_block_begin.png">assets/programming_blocks/if_block_begin.png</file>
+        <file alias="if_color_sensor.png">assets/programming_blocks/if_color_sensor.png</file>
+        <file alias="cond_block_end.png">assets/programming_blocks/cond_block_end.png</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="arrow.png">assets/programming_blocks/symbols/arrow.png</file>
         <file alias="start_program_symbol.png">assets/programming_blocks/symbols/start_program_symbol.png</file>
         <file alias="stop_program.png">assets/programming_blocks/symbols/stop_program.png</file>
         <file alias="run_program.png">assets/programming_blocks/symbols/run_program.png</file>
+        <file alias="turn_left.png">assets/programming_blocks/symbols/turn_left.png</file>
+    </qresource>
+    <qresource prefix="/appIcons">
+        <file alias="AppIcon.png">assets/AppIcon.png</file>
+        <file alias="AppIcon.ico">AppIcon.ico</file>
     </qresource>
 </RCC>
