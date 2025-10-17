@@ -36,10 +36,10 @@ add_subdirectory(components/preview_blocks)
 add_subdirectory(components/programming_blocks)
 add_subdirectory(components/utils)
 add_subdirectory(components/widgets)
-set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/AppIcon.rc")
+set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/AppIcon.ico")
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+	find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network)
 
     qt_add_executable(frontend
         MANUAL_FINALIZATION
