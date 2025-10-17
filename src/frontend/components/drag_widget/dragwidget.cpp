@@ -28,7 +28,7 @@ using namespace std;
 
 static const std::vector<std::string> order = {
     "start_program_prev",  "move_fwd_prev",    "move_bwd_prev",
-    "turn_left_prev",      "turn_right_prev",  "if_color_prev",
+    "turn_left_prev",      "turn_right_prev",  "if_color_prev", "while_block_prev",
     "cond_block_end_prev", "stop_program_prev"};
 
 DragWidget::DragWidget(QWidget *parent) : QFrame(parent) {

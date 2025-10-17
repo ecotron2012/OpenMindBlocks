@@ -8,6 +8,7 @@
 #include "stopprogramprev.h"
 #include "turnleftprev.h"
 #include "turnrightprev.h"
+#include "whileblockprev.h"
 #include <QJsonObject>
 #include <qjsonobject.h>
 #include <string>
@@ -25,6 +26,7 @@ const map<string, Factory> PREV_BLOCK_FACTORY = {
     {"turn_right_prev",
      [](QWidget *parent) { return new TurnRightPrev(parent); }},
     {"if_color_prev", [](QWidget *parent) { return new IfColorPrev(parent); }},
+    {"while_block_prev", [](QWidget *parent) { return new WhileBlockPrev(parent); }},
     {"cond_block_end_prev",
      [](QWidget *parent) { return new CondBlockEndPrev(parent); }},
     {"stop_program_prev",

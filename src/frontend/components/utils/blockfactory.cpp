@@ -8,6 +8,7 @@
 #include "components/programming_blocks/stopprogramblock.h"
 #include "components/programming_blocks/turnleftblock.h"
 #include "components/programming_blocks/turnrightblock.h"
+#include "components/programming_blocks/whileblock.h"
 #include <components/widgets/ifcolorwidget.h>
 #include <memory>
 #include <qgraphicsitem.h>
@@ -26,6 +27,7 @@ const unordered_map<string, Factory> BLOCK_FACTORY = {
     {"turn_left", [](const QJsonObject &) { return new TurnLeftBlock(); }},
     {"turn_right", [](const QJsonObject &) { return new TurnRightBlock(); }},
     {"if_color", [](const QJsonObject &) { return new IfColorBlock(); }},
+    {"while_cond", [](const QJsonObject &) { return new WhileBlock(); }},
     {"cond_block_end",
      [](const QJsonObject &) { return new CondBlockEndBlock(); }},
 };

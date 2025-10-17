@@ -10,6 +10,7 @@
         <file alias="if_block_begin.png">assets/programming_blocks/if_block_begin.png</file>
         <file alias="if_color_sensor.png">assets/programming_blocks/if_color_sensor.png</file>
         <file alias="cond_block_end.png">assets/programming_blocks/cond_block_end.png</file>
+        <file alias="while_block.png">assets/programming_blocks/while_block.png</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="arrow.png">assets/programming_blocks/symbols/arrow.png</file>
