@@ -50,13 +50,6 @@ jobs:
           echo $mingwBin | Out-File -FilePath $env:GITHUB_PATH -Append
           echo $qtBin    | Out-File -FilePath $env:GITHUB_PATH -Append
 
-      - name: Add Qt bin to PATH
-        shell: pwsh
-        run: |
-          $qtBin = "C:\Qt\${env:QT_VERSION}\mingw_64\bin"
-          echo "QT_BIN=$qtBin" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "$qtBin" | Out-File -FilePath $env:GITHUB_PATH -Append
-
       - name: Build frontend 
         shell: pwsh
         working-directory: src/frontend
