@@ -46,7 +46,6 @@ jobs:
           echo "$qtBin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
       - name: Build frontend 
-        if: ${{ false }}   
         working-directory: src/frontend
         run: |
           cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="C:/Qt/%QT_VERSION%/mingw_64" -S . -B build
