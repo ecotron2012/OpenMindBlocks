@@ -18,6 +18,7 @@
 #include <qsizepolicy.h>
 #include <qstackedlayout.h>
 #include <qwidget.h>
+#include <widgets/clearprogramwidget.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
@@ -69,6 +70,16 @@ MainWindow::MainWindow(QWidget *parent)
   runButton->setMinimumSize(QSize(10, 10));
   overlayLayout->setAlignment(Qt::AlignTop | Qt::AlignRight);
   lyt->addWidget(runButton, 0, 0, 1, 1, Qt::AlignTop | Qt::AlignRight);
+
+  ClearProgramWidget *clearButton = new ClearProgramWidget(centralWidget());
+  clearButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+  connect(clearButton, &QPushButton::clicked, clearButton,
+          &ClearProgramWidget::clearProgram);
+  connect(clearButton, &ClearProgramWidget::clearSignal, view,
+          &ProgramCanvas::clearCanvas);
+  clearButton->setMinimumSize(QSize(10, 10));
+  overlayLayout->addWidget(clearButton);
+  lyt->addWidget(clearButton, 0, 0, 1, 1, Qt::AlignTop | Qt::AlignLeft);
 }
 
 MainWindow::~MainWindow() { delete ui; }

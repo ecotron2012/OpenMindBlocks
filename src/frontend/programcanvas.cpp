@@ -1,10 +1,12 @@
 #include "programcanvas.h"
-#include "components/programming_blocks/blockitem/blockitem.h"
 #include "components/json_converter/jsonconverter.h"
+#include "components/programming_blocks/blockitem/blockitem.h"
 #include <QDebug>
 #include <QDragEnterEvent>
 #include <QGraphicsScene>
 #include <QMimeData>
+#include <components/http/httprequest.h>
+#include <cstdlib>
 #include <memory>
 #include <qjsondocument.h>
 #include <qlogging.h>
@@ -13,7 +15,6 @@
 #include <qurl.h>
 #include <utils/blockfactory.h>
 #include <vector>
-#include <components/http/httprequest.h>
 
 using namespace std;
 
@@ -42,9 +43,8 @@ void ProgramCanvas::addPiece(const QString &name, const QPoint &location) {
     return;
 
   // Aquí puedes usar tu BlockItem en lugar de un pixmap plano
-qDebug() << "Nombre siendo pasado: " << name;
-  BlockItem* piece =
-      BLOCK_FACTORY.at(name.toUtf8().constData())(QJsonObject{});
+  qDebug() << "Nombre siendo pasado: " << name;
+  BlockItem *piece = BLOCK_FACTORY.at(name.toUtf8().constData())(QJsonObject{});
   piece->setFlags(QGraphicsItem::ItemIsMovable |
                   QGraphicsItem::ItemIsSelectable);
   scene()->addItem(piece);
@@ -97,7 +97,8 @@ void ProgramCanvas::dropEvent(QDropEvent *event) {
   QString name;
   dataStream >> pixmap >> offset >> name;
 
-  qDebug() << "Position del evento: " << event->position().toPoint() << "Offset: " << offset;
+  qDebug() << "Position del evento: " << event->position().toPoint()
+           << "Offset: " << offset;
 
   addPiece(name,
            // event->position().toPoint() - offset);
@@ -106,14 +107,8 @@ void ProgramCanvas::dropEvent(QDropEvent *event) {
   event->acceptProposedAction();
 }
 
-// No lo necesitas si no implementas arrastrar desde la escena, pero lo dejo de
-// placeholder
-void ProgramCanvas::startDrag(Qt::DropActions supportedActions) {
-  Q_UNUSED(supportedActions);
-  qDebug() << "Start drag from ProgramCanvas (no implementado aún)";
-}
-
 void ProgramCanvas::deleteAt(int pos) {
+  BlockItem *piece = pieces.at(pos);
   this->pieces.erase(this->pieces.begin() + pos);
   this->pieceAmount--;
   // update positions of the rest of the pieces
@@ -126,10 +121,22 @@ void ProgramCanvas::deleteAt(int pos) {
 }
 
 void ProgramCanvas::runProgram() {
-	HTTPRequest* req = new HTTPRequest(QUrl(QString::fromStdString("http://127.0.0.1:5000/execute")), this);
-	JSONConverter* converter = JSONConverter::getInstance();
-	QJsonObject programJson = converter->convertCodeToJSON(this->pieces);
-	QJsonDocument doc(programJson);
-	qDebug().noquote() << doc.toJson(QJsonDocument::Indented);
-	req->postRequest(programJson);
+  HTTPRequest *req = new HTTPRequest(
+      QUrl(QString::fromStdString("http://127.0.0.1:5000/execute")), this);
+  JSONConverter *converter = JSONConverter::getInstance();
+  QJsonObject programJson = converter->convertCodeToJSON(this->pieces);
+  QJsonDocument doc(programJson);
+  qDebug().noquote() << doc.toJson(QJsonDocument::Indented);
+  req->postRequest(programJson);
+}
+
+// TODO
+void ProgramCanvas::renderBlocks() { return; }
+
+void ProgramCanvas::clearCanvas() {
+  scene()->clear();
+  pieces.clear();
+  startingPiece = nullptr;
+  lastPiece = nullptr;
+  pieceAmount = 0;
 }

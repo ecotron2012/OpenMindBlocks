@@ -32,8 +32,9 @@ protected:
   void dragEnterEvent(QDragEnterEvent *event) override;
   void dragMoveEvent(QDragMoveEvent *event) override;
   void dropEvent(QDropEvent *event) override;
-  void startDrag(Qt::DropActions supportedActions);
   void resizeEvent(QResizeEvent *event) override;
+  void renderBlocks();
+  void deleteAllBlocks();
 
   int m_PieceSize;
   int pieceAmount = 0;
@@ -43,6 +44,7 @@ protected:
 
 public slots:
   void runProgram();
+  void clearCanvas();
 };
 
 #endif
