@@ -34,7 +34,7 @@ jobs:
 
       - name: Install Qt via aqtinstall
         run: |
-          python -m aqt install-qt windows desktop $env:QT_VERSION $env:QT_ARCH% -O $env:QT_DIR%
+          python -m aqt install-qt windows desktop $env:QT_VERSION $env:QT_ARCH -O $env:QT_DIR
 
       - name: Add Qt bin to PATH
         shell: pwsh
