@@ -49,8 +49,13 @@ jobs:
         shell: pwsh
         working-directory: src/frontend
         run: |
-          cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="C:/Qt/%QT_VERSION%/mingw_64" -S . -B build
-          cmake --build build --config Release
+          cmake -G "Ninja" -S . -B build/Release `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_PREFIX_PATH="C:/Qt/${{ env.QT_VERSION }}/mingw_64" `
+            -DCMAKE_C_COMPILER="C:/Qt/${{ env.QT_VERSION }}/mingw_64/bin/gcc.exe" `
+            -DCMAKE_CXX_COMPILER="C:/Qt/${{ env.QT_VERSION }}/mingw_64/bin/g++.exe" `
+            -DCMAKE_RC_COMPILER="C:/Qt/${{ env.QT_VERSION }}/mingw_64/bin/windres.exe"
+          cmake --build build/Release --parallel
 
       - name: Copy frontend.exe to APP_OUT
         shell: pwsh
