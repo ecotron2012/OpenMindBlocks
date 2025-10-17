@@ -19,3 +19,14 @@ set_target_properties(launcher PROPERTIES
 if(WIN32)
   set_target_properties(launcher PROPERTIES WIN32_EXECUTABLE TRUE)
 endif()
+
+set(OUT_DIR "$ENV{APP_OUT}")
+if(NOT OUT_DIR)
+  set(OUT_DIR "${CMAKE_SOURCE_DIR}/dist/release")
+endif()
+
+add_custom_command(TARGET launcher POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E make_directory "${OUT_DIR}"
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+          "$<TARGET_FILE:launcher>"  "${OUT_DIR}/launcher.exe"
+)

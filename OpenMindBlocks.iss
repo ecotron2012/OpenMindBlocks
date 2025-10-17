@@ -1,7 +1,7 @@
 ; OpenMindBlocks.iss — instalador Inno Setup (por-usuario, sin admin)
 
 [Setup]
-AppId={{3112F31B-25A0-48B5-B753-BBABC94124C0}};
+AppId={{3112F31B-25A0-48B5-B753-BBABC94124C0}}
 AppName=OpenMindBlocks
 AppVersion=0.5.0
 AppPublisher=Cristóbal Carreño
@@ -14,10 +14,10 @@ OutputBaseFilename=OpenMindBlocks-Setup
 Compression=lzma2
 SolidCompression=yes
 PrivilegesRequired=lowest
-ArchitecturesInstallIn64BitMode=x64
-ArchitecturesAllowed=x64
+ArchitecturesInstallIn64BitMode=x64compatible
+ArchitecturesAllowed=x64compatible
 UninstallDisplayIcon={app}\AppIcon.ico
-SetupIconFile=dist\AppIcon.ico
+SetupIconFile=AppIcon.ico
 WizardStyle=modern
 
 [Languages]
@@ -27,7 +27,7 @@ Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 Name: "desktopicon"; Description: "Crear acceso directo en el escritorio"; GroupDescription: "Accesos directos:"; Flags: unchecked
 
 [Files]
-Source: "dist\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
+Source: "dist\release\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
 
 [Icons]
 Name: "{group}\OpenMindBlocks"; Filename: "{app}\launcher.exe"; WorkingDir: "{app}"; IconFilename: "{app}\frontend.exe"

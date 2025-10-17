@@ -174,7 +174,6 @@ venv.bak/
 *.ini
 *.toml
 *.yaml
-*.yml
 *.cfg
 
 # Archivos de dependencias
