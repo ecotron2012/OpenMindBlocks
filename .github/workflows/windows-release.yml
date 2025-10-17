@@ -34,9 +34,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install aqtinstall cmake ninja pyinstaller
 
-      - name: Install Qt via aqtinstall
+      - name: Install Qt via aqtinstall + MinGW
         run: |
           python -m aqt install-qt windows desktop $env:QT_VERSION $env:QT_ARCH -O $env:QT_DIR
+          python -m aqt list-tool windows desktop --arch x64
+          python -m aqt install-tool windows desktop tools_mingw1310_64 -O $env:QT_DIR
+
+      - name: Set PATHs for Qt and MinGW
+        shell: pwsh
+        run: |
+          $qtBin = "C:\Qt\${env:QT_VERSION}\mingw_64\bin"
+          $mingwBin = "C:\Qt\Tools\mingw1310_64\bin" 
+          echo "QT_BIN=$qtBin" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "MINGW_BIN=$mingwBin" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo $mingwBin | Out-File -FilePath $env:GITHUB_PATH -Append
+          echo $qtBin    | Out-File -FilePath $env:GITHUB_PATH -Append
 
       - name: Add Qt bin to PATH
         shell: pwsh
