@@ -31,6 +31,7 @@ ev3.speaker.play_file(SoundFile.MOTOR_START)
 def stop_program():
     return """
 _thread.start_new_thread(play_sound, (SoundFile.MOTOR_STOP,))
+ev3.screen.load_image(ImageFile.SLEEPING)
 wait(1000)
 """
 
