@@ -1,6 +1,11 @@
 import logging
 import threading
 import paramiko
+import time
+import socket
+from paramiko.ssh_exception import (
+    NoValidConnectionsError, AuthenticationException, SSHException
+)
 from flask import Flask, request, jsonify
 import os
 import sys
@@ -11,29 +16,64 @@ from engine import prims, compile_runtime
 from pathlib import Path
 from werkzeug.serving import make_server
 
+def connect_ssh_with_retries(host, user, *, password=None, pkey_path=None,
+                             port=22, attempts=10, delay_secs=5, timeout=10,
+                             look_for_keys=False, allow_agent=False):
+    key = None
+    if pkey_path:
+        key = paramiko.RSAKey.from_private_key_file(pkey_path)
+
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+    last_exc = None
+    for i in range(1, attempts + 1):
+        try:
+            client.connect(
+                hostname=host,
+                username=user,
+                password=password,
+                pkey=key,
+                timeout=timeout,           # timeout de socket
+                banner_timeout=timeout,    # útil si el servidor tarda en mostrar banner
+                auth_timeout=timeout,      # timeout de autenticación
+                look_for_keys=look_for_keys,
+                allow_agent=allow_agent,
+            )
+            # Keepalive para evitar caídas por ociosidad
+            client.get_transport().set_keepalive(30)
+            print(f"Conectado en intento {i}")
+            return client
+        except (NoValidConnectionsError, AuthenticationException, SSHException,
+                socket.timeout, OSError, socket.error) as e:
+            last_exc = e
+            print(f"Intento {i}/{attempts} falló: {e!r}")
+            if i < attempts:
+                time.sleep(delay_secs)
+
+    # Si llega aquí, no pudo conectar
+    raise RuntimeError(f"No fue posible conectar después de {attempts} intentos") from last_exc
+
 def load_env():
     try:
         from dotenv import load_dotenv
     except ImportError:
-        return  # si no está, sigue con ENV del sistema
+        return  
 
     candidates = []
 
-    # 1) Si es one-file, datos empaquetados van en _MEIPASS:
     meipass = getattr(sys, "_MEIPASS", None)
     if meipass:
         candidates.append(Path(meipass) / ".env")
 
-    # 2) Carpeta del ejecutable (permite .env editable junto al EXE)
     exe_dir = Path(getattr(sys, "executable", __file__)).parent
     candidates.append(exe_dir / ".env")
 
-    # 3) CWD por si lo lanzan desde terminal
     candidates.append(Path.cwd() / ".env")
 
     for p in candidates:
         if p.is_file():
-            load_dotenv(p)        # carga y no rompe si faltan claves
+            load_dotenv(p)
             break
 
 load_env()
@@ -43,7 +83,7 @@ host = os.getenv("HOST")
 user = os.getenv("USER")
 pwd = os.getenv("PASS")
 
-ssh = paramiko.SSHClient()
+ssh = connect_ssh_with_retries(host, user=user, password=pwd, attempts=50, delay_secs=5)
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 ssh.connect(host, username=user, password=pwd)
 
