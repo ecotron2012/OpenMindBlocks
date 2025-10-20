@@ -195,20 +195,21 @@ int main(int argc, char *argv[]) {
 #if defined(Q_OS_WIN)
   attachJobToProcess(backend.processId());
 #endif
-  if (!backend.waitForStarted(5000)) {
-    writeLine(launcherLog.get(),
-              "ERROR: backend no arrancó (timeout en waitForStarted).");
-    return 1;
-  }
-
-  if (!waitForPort(host, port, startTimeout)) {
-    writeLine(launcherLog.get(),
-              "ERROR: backend no abrió el puerto a tiempo. Matando backend.");
-    backend.kill();
-    backend.waitForFinished(2000);
-    return 2;
-  }
-  writeLine(launcherLog.get(), "Backend OK: puerto arriba.");
+//TODO: Rework: Start regardless of backend status and add a message in frontend to indicate that the device is not connected
+  // if (!backend.waitForStarted(5000)) {
+  //   writeLine(launcherLog.get(),
+  //             "ERROR: backend no arrancó (timeout en waitForStarted).");
+  //   return 1;
+  // }
+  //
+  // if (!waitForPort(host, port, startTimeout)) {
+  //   writeLine(launcherLog.get(),
+  //             "ERROR: backend no abrió el puerto a tiempo. Matando backend.");
+  //   backend.kill();
+  //   backend.waitForFinished(2000);
+  //   return 2;
+  // }
+  // writeLine(launcherLog.get(), "Backend OK: puerto arriba.");
 
   // ========== Launch GUI ==========
   QProcess gui;

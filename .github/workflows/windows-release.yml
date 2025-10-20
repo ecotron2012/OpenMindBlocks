@@ -99,9 +99,9 @@ jobs:
         shell: pwsh
         run: |
           $internal = @"
-          HOST=${{ secrets.EV3_HOST }}
-          USER=${{ secrets.EV3_USER }}
-          PASS=${{ secrets.EV3_PASS }}
+          EV3_HOST=${{ secrets.EV3_HOST }}
+          EV3_USER=${{ secrets.EV3_USER }}
+          EV3_PASS=${{ secrets.EV3_PASS }}
           "@
           Set-Content -Path ".\.env" -Value $internal -Encoding UTF8
           pyinstaller app.py --name backend --onefile --noconsole --add-data ".env;.env"
@@ -111,9 +111,9 @@ jobs:
         shell: pwsh
         run: |
           $content = @"
-          HOST=${{ secrets.EV3_HOST }}
-          USER=${{ secrets.EV3_USER }}
-          PASS=${{ secrets.EV3_PASS }}
+          EV3_HOST=${{ secrets.EV3_HOST }}
+          EV3_USER=${{ secrets.EV3_USER }}
+          EV3_PASS=${{ secrets.EV3_PASS }}
           "@
           Set-Content -Path ".\dist\release\.env" -Value $content -Encoding UTF8
 
