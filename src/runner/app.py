@@ -40,7 +40,6 @@ def connect_ssh_with_retries(host, user, *, password=None, pkey_path=None,
                 look_for_keys=look_for_keys,
                 allow_agent=allow_agent,
             )
-            # Keepalive para evitar caídas por ociosidad
             client.get_transport().set_keepalive(30)
             print(f"Conectado en intento {i}")
             return client

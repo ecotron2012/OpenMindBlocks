@@ -89,6 +89,14 @@ static void writeLine(QFile *f, const QString &line) {
   ts.flush();
 }
 
+#ifdef Q_OS_WIN
+constexpr const char* kBackendDefault = "backend.exe";
+constexpr const char* kGuiDefault     = "frontend.exe";
+#else
+constexpr const char* kBackendDefault = "backend";
+constexpr const char* kGuiDefault     = "frontend";
+#endif
+
 // ============= App Launcher =============
 
 int main(int argc, char *argv[]) {
@@ -117,10 +125,10 @@ int main(int argc, char *argv[]) {
       QStringLiteral("ms"), QStringLiteral("3000"));
   QCommandLineOption backendPathOpt(
       QStringLiteral("backend"), QStringLiteral("Nombre o ruta del backend"),
-      QStringLiteral("path"), QStringLiteral("backend.exe"));
+      QStringLiteral("path"), QString::fromLatin1(kBackendDefault));
   QCommandLineOption guiPathOpt(
       QStringLiteral("gui"), QStringLiteral("Nombre o ruta de la GUI"),
-      QStringLiteral("path"), QStringLiteral("frontend.exe"));
+      QStringLiteral("path"), QString::fromLatin1(kGuiDefault));
   parser.addOption(hostOpt);
   parser.addOption(portOpt);
   parser.addOption(startTimeoutOpt);
@@ -141,6 +149,19 @@ int main(int argc, char *argv[]) {
     backendProg = exeDir() + QDir::separator() + backendProg;
   if (QDir::isRelativePath(guiProg))
     guiProg = exeDir() + QDir::separator() + guiProg;
+
+#ifdef Q_OS_WIN
+  auto ensureExe = [](QString p) -> QString {
+    if (!p.endsWith(".exe", Qt::CaseInsensitive)) {
+      const QString withExe = p + ".exe";
+      if (QFile::exists(withExe) && !QFile::exists(p))
+        return withExe;
+    }
+    return p;
+  };
+  backendProg = ensureExe(backendProg);
+  guiProg     = ensureExe(guiProg);
+#endif
 
   // Logs
   std::unique_ptr<QFile> backendLog(openLogFile("backend"));
