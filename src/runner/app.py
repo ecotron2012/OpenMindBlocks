@@ -33,7 +33,6 @@ def connect_ssh_with_retries(host, user, *, password=None, pkey_path=None,
                 hostname=host,
                 username=user,
                 password=password,
-                pkey=key,
                 timeout=timeout,           # timeout de socket
                 banner_timeout=timeout,    # útil si el servidor tarda en mostrar banner
                 auth_timeout=timeout,      # timeout de autenticación
@@ -78,13 +77,11 @@ def load_env():
 load_env()
 app = Flask(__name__)
 
-host = os.getenv("HOST")
-user = os.getenv("USER")
-pwd = os.getenv("PASS")
+host = os.getenv("EV3_HOST")
+user = os.getenv("EV3_USER")
+pwd = os.getenv("EV3_PASS")
 
-ssh = connect_ssh_with_retries(host, user=user, password=pwd, attempts=50, delay_secs=5)
-ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh.connect(host, username=user, password=pwd)
+ssh = connect_ssh_with_retries(host, user=user, password=pwd, attempts=50, delay_secs=5, look_for_keys=False, allow_agent=False)
 
 @app.route("/")
 def hello_world():
