@@ -8,8 +8,8 @@
 #include <QPixmap>
 #include <QStackedLayout>
 #include <QVBoxLayout>
-#include <memory_resource> 
 #include <components/widgets/runprogramwidget.h>
+#include <memory_resource>
 #include <qboxlayout.h>
 #include <qgridlayout.h>
 #include <qnamespace.h>
@@ -25,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow),
       scene(new QGraphicsScene(this)) {
   ui->setupUi(this);
+  // Maximize the window on startup
+  this->setWindowState(Qt::WindowMaximized);
+
   ProgramCanvas *view = new ProgramCanvas(100, 100);
 
   if (!centralWidget())
