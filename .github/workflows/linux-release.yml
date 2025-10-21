@@ -38,7 +38,11 @@ jobs:
           sudo apt-get install -y patchelf file cmake ninja-build build-essential \
                                   libgl1-mesa-dev libxkbcommon-x11-0 libxcb-xinerama0 \
                                   libxcb-image0 libxcb-keysyms1 libxcb-render-util0 curl \
-                                  libxcb-cursor0 libxcb-icccm4 
+                                  libxcb-cursor0 libxcb-icccm4 libxcb-shape0 libxcb1 \
+                                  libxcb-render0 libxcb-shm0 libxcb-xfixes0 libxcb-randr0 libxcb-sync1 libxcb-xkb1 \
+                                  libx11-xcb1 libxrender1 libxi6 libxrandr2 \
+                                  libsm6 libice6 \
+                                  libfontconfig1 libfreetype6 libglib2.0-0
 
       - name: Install aqt + linuxdeploy tools
         shell: bash
