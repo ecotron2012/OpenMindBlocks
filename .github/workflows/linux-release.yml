@@ -44,21 +44,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Limpia variables que fuerzan archives/módulos (causan 'qt_base')
-          unset AQT_ARCHIVES AQT_TOOL_ARCHIVES QT_ARCHIVES QT_MODULES || true
-
-          # (Debug opcional) ver si hay algo raro en el entorno
-          env | sort | grep -E '^(AQT|QT)_' || true
-
-          python -m pip install --upgrade pip "aqtinstall==3.3.0" pyinstaller
-
-          # (Debug opcional) ver catálogo para la versión/arch
-          python -m aqt version
-          # python -m aqt list-qt linux desktop 6.9.2
-          # python -m aqt list-modules linux desktop 6.9.2 gcc_64
+          python -m pip install --upgrade pip aqtinstall pyinstaller
 
           # Qt (sin archives ni qt_base)
-          python -m aqt install-qt linux desktop 6.9.2 gcc_64 -O "$GITHUB_WORKSPACE/Qt"
+          python -m aqt install-qt linux desktop 6.9.2 linux_gcc_64 -O "$GITHUB_WORKSPACE/Qt"
 
           echo "$GITHUB_WORKSPACE/Qt/6.9.2/gcc_64/bin" >> $GITHUB_PATH
 
