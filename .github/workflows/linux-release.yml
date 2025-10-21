@@ -133,7 +133,7 @@ jobs:
 
           cp "src/runner/.env" "$APPDIR/usr/bin/.env"
           # Si tienes launcher Qt en Linux, usa ese; si no, usa script
-          if [[ -f "launcher/build/Release/launcher" ]]; then
+          if [[ -f "dist/release/launcher" ]]; then
             cp "launcher/build/Release/launcher" "$APPDIR/usr/bin/launcher"
             chmod +x "$APPDIR/usr/bin/launcher"
             LAUNCH_EXEC="launcher"
