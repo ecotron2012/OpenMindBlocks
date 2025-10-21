@@ -129,9 +129,6 @@ jobs:
           cp "src/runner/dist/backend" "$APPDIR/usr/bin/backend"
           chmod +x "$APPDIR/usr/bin/backend"
 
-          cp "dist/release/launcher" "$APPDIR/usr/bin/launcher"
-          chmod +x "$APPDIR/usr/bin/launcher"
-
           cp "src/runner/.env" "$APPDIR/usr/bin/.env"
           # Si tienes launcher Qt en Linux, usa ese; si no, usa script
           if [[ -f "dist/release/launcher" ]]; then
