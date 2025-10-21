@@ -89,16 +89,14 @@ jobs:
           EV3_HOST: ${{ secrets.EV3_HOST }}
           EV3_USER: ${{ secrets.EV3_USER }}
           EV3_PASS: ${{ secrets.EV3_PASS }}
-          BACKEND_HOST: ${{ secrets.BACKEND_HOST }}
-          BACKEND_PORT: ${{ secrets.BACKEND_PORT }}
         run: |
           set -euo pipefail
 
           # Crea .env junto a app.py
           cat > .env <<EOF
-EV3_HOST=${{ secrets.EV3_HOST }}
-EV3_USER=${{ secrets.EV3_USER }}
-EV3_PASS=${{ secrets.EV3_PASS }}
+EV3_HOST=${EV3_HOST}
+EV3_USER=${EV3_USER}
+EV3_PASS=${EV3_PASS}
 EOF
 
           pyinstaller app.py --name backend --onefile --noconsole --add-data ".env:.env"
