@@ -8,6 +8,7 @@
 #include <QPixmap>
 #include <QStackedLayout>
 #include <QVBoxLayout>
+#include <memory_resource> 
 #include <components/widgets/runprogramwidget.h>
 #include <qboxlayout.h>
 #include <qgridlayout.h>

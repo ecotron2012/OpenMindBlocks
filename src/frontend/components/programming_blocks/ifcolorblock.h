@@ -6,6 +6,7 @@
 #include <qgraphicsitem.h>
 #include <qitemselectionmodel.h>
 #include <qtmetamacros.h>
+#include <memory_resource> 
 
 enum class ComboAnchor { TopLeft, TopRight, BottomLeft, BottomRight, Center };
 

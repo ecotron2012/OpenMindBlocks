@@ -20,6 +20,7 @@
 #include <qpalette.h>
 #include <qpixmap.h>
 #include <qpoint.h>
+#include <memory_resource> 
 
 struct NamedColor {
   const char *name;

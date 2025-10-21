@@ -6,6 +6,7 @@
 #include <QPointer>
 #include <qevent.h>
 #include <qobject.h>
+#include <memory_resource> 
 
 using namespace std;
 class BlockItem : public QGraphicsObject {

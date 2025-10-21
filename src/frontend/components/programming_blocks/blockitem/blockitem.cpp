@@ -15,6 +15,7 @@
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpixmap.h>
+#include <memory_resource> 
 BlockItem::BlockItem(const QPixmap &skin, bool hasLeftKnob, bool hasRightKnob,
                      int position, string name, QJsonObject params,
                      QGraphicsItem *parent)
