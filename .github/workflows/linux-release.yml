@@ -131,42 +131,42 @@ jobs:
           else
             # Script launcher
             cat > "$APPDIR/usr/bin/launcher" << 'EOF'
-#!/usr/bin/env bash
-set -euo pipefail
-HERE="$(cd "$(dirname "$0")" && pwd)"
-if [[ -f "$HERE/.env" ]]; then set -a; source "$HERE/.env"; set +a; fi
-"$HERE/backend" & BACK_PID=$!
-TIMEOUT_MS="${START_TIMEOUT_MS:-20000}"
-HOST="${BACKEND_HOST:-127.0.0.1}"
-PORT="${BACKEND_PORT:-5000}"
-elapsed=0; step=200
-while ! bash -c "</dev/tcp/$HOST/$PORT" 2>/dev/null; do
-  sleep $(awk "BEGIN {print $step/1000}")
-  elapsed=$((elapsed+step))
-  if [[ $elapsed -ge $TIMEOUT_MS ]]; then
-    echo "Backend no respondió en ${TIMEOUT_MS}ms" >&2
-    kill $BACK_PID || true
-    exit 1
-  fi
-done
-"$HERE/frontend" "$@"
-kill $BACK_PID 2>/dev/null || true
-wait $BACK_PID 2>/dev/null || true
-EOF
+            #!/usr/bin/env bash
+            set -euo pipefail
+            HERE="$(cd "$(dirname "$0")" && pwd)"
+            if [[ -f "$HERE/.env" ]]; then set -a; source "$HERE/.env"; set +a; fi
+            "$HERE/backend" & BACK_PID=$!
+            TIMEOUT_MS="${START_TIMEOUT_MS:-20000}"
+            HOST="${BACKEND_HOST:-127.0.0.1}"
+            PORT="${BACKEND_PORT:-5000}"
+            elapsed=0; step=200
+            while ! bash -c "</dev/tcp/$HOST/$PORT" 2>/dev/null; do
+              sleep $(awk "BEGIN {print $step/1000}")
+              elapsed=$((elapsed+step))
+              if [[ $elapsed -ge $TIMEOUT_MS ]]; then
+                echo "Backend no respondió en ${TIMEOUT_MS}ms" >&2
+                kill $BACK_PID || true
+                exit 1
+              fi
+            done
+            "$HERE/frontend" "$@"
+            kill $BACK_PID 2>/dev/null || true
+            wait $BACK_PID 2>/dev/null || true
+            EOF
             chmod +x "$APPDIR/usr/bin/launcher"
             LAUNCH_EXEC="launcher"
           fi
 
-          # .desktop (apunta al ejecutable elegido)
+              # .desktop (apunta al ejecutable elegido)
           cat > "$APPDIR/usr/share/applications/OpenMindBlocks.desktop" <<EOF
-[Desktop Entry]
-Type=Application
-Name=OpenMindBlocks
-Exec=${LAUNCH_EXEC}
-Icon=openmindblocks
-Terminal=false
-Categories=Education;Development;
-EOF
+          [Desktop Entry]
+          Type=Application
+          Name=OpenMindBlocks
+          Exec=${LAUNCH_EXEC}
+          Icon=openmindblocks
+          Terminal=false
+          Categories=Education;Development;
+          EOF
 
           # Icono (ajusta la ruta si es distinto)
           cp "src/frontend/assets/icon-256.png" "$APPDIR/usr/share/icons/hicolor/256x256/apps/openmindblocks.png"
