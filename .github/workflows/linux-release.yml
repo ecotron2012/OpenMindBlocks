@@ -41,16 +41,31 @@ jobs:
 
       - name: Install aqt + linuxdeploy tools
         run: |
+          set -euo pipefail
+
+          # Limpia variables que fuerzan archives/módulos (causan 'qt_base')
+          unset AQT_ARCHIVES AQT_TOOL_ARCHIVES QT_ARCHIVES QT_MODULES || true
+
+          # (Debug opcional) ver si hay algo raro en el entorno
+          env | sort | grep -E '^(AQT|QT)_' || true
+
           python -m pip install --upgrade pip "aqtinstall==3.3.0" pyinstaller
-          python -m aqt install-qt linux desktop $QT_VERSION $QT_ARCH -O "$QT_DIR"
-          echo "$QT_DIR/$QT_VERSION/$QT_ARCH/bin" >> $GITHUB_PATH
+
+          # (Debug opcional) ver catálogo para la versión/arch
+          python -m aqt version
+          python -m aqt list-qt linux desktop 6.9.2
+          python -m aqt list-modules linux desktop 6.9.2 gcc_64
+
+          # Qt (sin archives ni qt_base)
+          python -m aqt install-qt linux desktop 6.9.2 gcc_64 -O "$GITHUB_WORKSPACE/Qt"
+
+          echo "$GITHUB_WORKSPACE/Qt/6.9.2/gcc_64/bin" >> $GITHUB_PATH
 
           # linuxdeploy + plugin-qt
           mkdir -p "$GITHUB_WORKSPACE/tools"
           curl -Ls -o tools/linuxdeploy https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
           curl -Ls -o tools/linuxdeploy-plugin-qt https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
           chmod +x tools/linuxdeploy tools/linuxdeploy-plugin-qt
-
       # --- Build frontend (Qt) ---
       - name: Configure frontend (CMake)
         working-directory: src/frontend
