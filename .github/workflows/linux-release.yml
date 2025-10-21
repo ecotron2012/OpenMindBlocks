@@ -54,8 +54,8 @@ jobs:
 
           # (Debug opcional) ver catálogo para la versión/arch
           python -m aqt version
-          python -m aqt list-qt linux desktop 6.9.2
-          python -m aqt list-modules linux desktop 6.9.2 gcc_64
+          # python -m aqt list-qt linux desktop 6.9.2
+          # python -m aqt list-modules linux desktop 6.9.2 gcc_64
 
           # Qt (sin archives ni qt_base)
           python -m aqt install-qt linux desktop 6.9.2 gcc_64 -O "$GITHUB_WORKSPACE/Qt"
