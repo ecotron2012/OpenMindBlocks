@@ -56,8 +56,17 @@ jobs:
           -DCMAKE_BUILD_TYPE=Release
           -DCMAKE_PREFIX_PATH="$QT_DIR/6.9.2/gcc_64"
 
+      - name: Configure launcher (CMake)
+        run: >
+          cmake -G Ninja -S . -B build/Release
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_PREFIX_PATH="$QT_DIR/6.9.2/gcc_64"
+
       - name: Build frontend (CMake)
         working-directory: src/frontend
+        run: cmake --build build/Release --parallel
+
+      - name: Build launcher (CMake)
         run: cmake --build build/Release --parallel
 
       # --- Build backend (PyInstaller) ---
