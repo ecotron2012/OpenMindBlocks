@@ -64,7 +64,8 @@ void WhileBlock::setupCombo() {
 
   m_comboProxy = new QGraphicsProxyWidget(this);
   m_comboProxy->setWidget(m_combo);
-  m_comboProxy->setZValue(1);
+  m_combo->setMaxVisibleItems(3);
+  m_comboProxy->setZValue(1e6);
 
   connect(m_combo, qOverload<int>(&QComboBox::currentIndexChanged), this,
           [this](int idx) {
@@ -105,7 +106,8 @@ void WhileBlock::ensureCombo() {
 
   m_comboProxy = new QGraphicsProxyWidget(this);
   m_comboProxy->setWidget(m_combo);
-  m_comboProxy->setZValue(1);
+  m_combo->setMaxVisibleItems(3);
+  m_comboProxy->setZValue(1e6);
 
   connect(m_combo, qOverload<int>(&QComboBox::currentIndexChanged), this,
           [this](int idx) {

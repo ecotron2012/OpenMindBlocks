@@ -2,11 +2,13 @@
 #include "components/programming_blocks/blockitem/blockitem.h"
 #include <QGraphicsProxyWidget>
 #include <QLabel>
+#include <QListView>
 #include <QPainter>
 #include <QString>
 #include <components/graphics/colorswatchdelegate.h>
 #include <components/utils/prims.h>
 #include <map>
+#include <memory_resource>
 #include <qbrush.h>
 #include <qcontainerfwd.h>
 #include <qgraphicsitem.h>
@@ -20,7 +22,6 @@
 #include <qpalette.h>
 #include <qpixmap.h>
 #include <qpoint.h>
-#include <memory_resource> 
 
 struct NamedColor {
   const char *name;
@@ -93,10 +94,11 @@ void IfColorBlock::setupCombo() {
   m_combo->setStyleSheet("QComboBox { color: red; }");
   m_combo->setFixedHeight(30);
   m_combo->setMinimumWidth(90);
+  m_combo->setMaxVisibleItems(3);
 
   m_comboProxy = new QGraphicsProxyWidget(this);
   m_comboProxy->setWidget(m_combo);
-  m_comboProxy->setZValue(1);
+  m_comboProxy->setZValue(1e6);
 
   connect(m_combo, qOverload<int>(&QComboBox::currentIndexChanged), this,
           [this](int idx) {
