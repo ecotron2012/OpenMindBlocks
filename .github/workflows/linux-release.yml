@@ -1,0 +1,178 @@
+name: Linux_AppImage_Release
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published, prereleased, created, edited]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: linux-release-${{ github.event.release.id || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-attach-linux:
+    runs-on: ubuntu-22.04   # cambia a 20.04 si necesitas glibc más vieja
+    steps:
+      - name: Checkout (release ref)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.release.draft && github.event.release.target_commitish || format('refs/tags/{0}', github.event.release.tag_name || github.ref_name) }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y patchelf file cmake ninja-build build-essential \
+                                  libgl1-mesa-dev libxkbcommon-x11-0 libxcb-xinerama0 \
+                                  libxcb-image0 libxcb-keysyms1 libxcb-render-util0 curl
+
+      - name: Install aqt + linuxdeploy tools
+        run: |
+          python -m pip install --upgrade pip aqtinstall pyinstaller
+          # Qt
+          python -m aqt install-qt linux desktop 6.9.2 gcc_64 -O $GITHUB_WORKSPACE/Qt
+          echo "QT_DIR=$GITHUB_WORKSPACE/Qt" >> $GITHUB_ENV
+          echo "$GITHUB_WORKSPACE/Qt/6.9.2/gcc_64/bin" >> $GITHUB_PATH
+
+          # linuxdeploy + plugin-qt
+          mkdir -p $GITHUB_WORKSPACE/tools
+          curl -L -o tools/linuxdeploy https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          curl -L -o tools/linuxdeploy-plugin-qt https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x tools/linuxdeploy tools/linuxdeploy-plugin-qt
+
+      # --- Build frontend (Qt) ---
+      - name: Configure frontend (CMake)
+        working-directory: src/frontend
+        run: >
+          cmake -G Ninja -S . -B build/Release
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_PREFIX_PATH="$QT_DIR/6.9.2/gcc_64"
+
+      - name: Build frontend (CMake)
+        working-directory: src/frontend
+        run: cmake --build build/Release --parallel
+
+      # --- Build backend (PyInstaller) ---
+      - name: Install backend deps
+        working-directory: src/runner
+        run: |
+          python -m pip install -r requirements.txt
+
+      - name: Package backend with PyInstaller (Linux)
+        working-directory: ${{ env.PY_DIR }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Crea .env junto a app.py
+          cat > .env <<EOF
+          EV3_HOST=${{ secrets.EV3_HOST }}
+          EV3_USER=${{ secrets.EV3_USER }}
+          EV3_PASS=${{ secrets.EV3_PASS }}
+          EOF
+
+          pyinstaller app.py --name backend --onefile --noconsole --add-data ".env:.env"
+
+          # (Opcional) borra el .env temporal
+          rm -f .env
+
+          # Copia al staging (ajusta si tu layout es distinto)
+          install -D -m 755 dist/backend "${APP_OUT}/backend"
+
+      # --- Montar AppDir ---
+      - name: Assemble AppDir
+        run: |
+          set -e
+          APPDIR=$GITHUB_WORKSPACE/AppDir
+          mkdir -p $APPDIR/usr/bin
+          mkdir -p $APPDIR/usr/share/applications
+          mkdir -p $APPDIR/usr/share/icons/hicolor/256x256/apps
+
+          # Copia binarios
+          cp src/frontend/build/Release/frontend $APPDIR/usr/bin/frontend
+          cp src/runner/dist/backend $APPDIR/usr/bin/backend
+
+          # (Opcional) .env para backend
+          cp src/runner/.env $APPDIR/usr/bin/.env || true
+
+          # launcher
+          cat > $APPDIR/usr/bin/launcher.sh << 'EOF'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          APPDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+          BIN="$APPDIR/bin"
+          if [[ -f "$BIN/.env" ]]; then set -a; source "$BIN/.env"; set +a; fi
+          "$BIN/backend" & BACK_PID=$!
+          TIMEOUT_MS=${START_TIMEOUT_MS:-20000}
+          HOST=${BACKEND_HOST:-127.0.0.1}
+          PORT=${BACKEND_PORT:-5000}
+          elapsed=0; step=200
+          while ! bash -c "</dev/tcp/$HOST/$PORT" 2>/dev/null; do
+            sleep $(awk "BEGIN {print $step/1000}")
+            elapsed=$((elapsed+step))
+            if [[ $elapsed -ge $TIMEOUT_MS ]]; then
+              echo "Backend no respondió en ${TIMEOUT_MS}ms" >&2
+              kill $BACK_PID || true
+              exit 1
+            fi
+          done
+          "$BIN/frontend" "$@"
+          kill $BACK_PID 2>/dev/null || true
+          wait $BACK_PID 2>/dev/null || true
+          EOF
+          chmod +x $APPDIR/usr/bin/launcher.sh
+
+          # .desktop
+          cat > $APPDIR/usr/share/applications/OpenMindBlocks.desktop << 'EOF'
+          [Desktop Entry]
+          Type=Application
+          Name=OpenMindBlocks
+          Exec=launcher.sh
+          Icon=openmindblocks
+          Terminal=false
+          Categories=Education;Development;
+          EOF
+
+          # Icono (ajusta la ruta a tu PNG)
+          cp src/frontend/assets/icon-256.png $APPDIR/usr/share/icons/hicolor/256x256/apps/openmindblocks.png
+
+      # --- Generar AppImage ---
+      - name: Build AppImage
+        run: |
+          export QML_SOURCES_PATHS=$GITHUB_WORKSPACE/src/frontend
+          tools/linuxdeploy --appdir AppDir \
+            -d AppDir/usr/share/applications/OpenMindBlocks.desktop \
+            -i AppDir/usr/share/icons/hicolor/256x256/apps/openmindblocks.png \
+            -e AppDir/usr/bin/frontend \
+            -e AppDir/usr/bin/backend \
+            --output appimage \
+            --plugin qt
+          # El AppImage quedará como OpenMindBlocks-*.AppImage
+          ls -l *.AppImage
+          echo "APPIMAGE_PATH=$(ls -1 *.AppImage | head -n1)" >> $GITHUB_ENV
+
+      - name: Checksum
+        run: |
+          sha256sum "$APPIMAGE_PATH" | tee "$APPIMAGE_PATH.sha256"
+
+      # --- Adjuntar al release existente ---
+      - name: Attach to existing Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          name: ${{ github.event.release.name }}
+          draft: ${{ github.event.release.draft }}
+          prerelease: ${{ github.event.release.prerelease }}
+          files: |
+            ${{ env.APPIMAGE_PATH }}
+            ${{ env.APPIMAGE_PATH }}.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
