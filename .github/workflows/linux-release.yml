@@ -98,8 +98,7 @@ jobs:
           EV3_PASS: ${{ secrets.EV3_PASS }}
         run: |
           set -euo pipefail
-          cat ${EV3_HOST_LINUX}
-
+          #
           # Crea .env junto a app.py
           cat > .env <<EOF
           EV3_HOST=${EV3_HOST_LINUX}
