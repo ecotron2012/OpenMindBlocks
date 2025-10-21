@@ -37,7 +37,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y patchelf file cmake ninja-build build-essential \
                                   libgl1-mesa-dev libxkbcommon-x11-0 libxcb-xinerama0 \
-                                  libxcb-image0 libxcb-keysyms1 libxcb-render-util0 curl
+                                  libxcb-image0 libxcb-keysyms1 libxcb-render-util0 curl \
+                                  libxcb-cursor0
 
       - name: Install aqt + linuxdeploy tools
         shell: bash
@@ -74,7 +75,7 @@ jobs:
         run: >
           cmake -G Ninja -S . -B build/Release
           -DCMAKE_BUILD_TYPE=Release
-          -DCMAKE_PREFIX_PATH="${{ env.QT_DIR }}/${{ env.QT_VERSION }}/${{ env.QT_ARCH }}"
+          -DCMAKE_PREFIX_PATH="$QT_DIR/6.9.2/gcc_64"
 
       - name: Build launcher (CMake)
         working-directory: launcher
@@ -186,7 +187,7 @@ jobs:
           tools/linuxdeploy --appdir "$APPDIR" \
             -d "$APPDIR/usr/share/applications/OpenMindBlocks.desktop" \
             -i "$APPDIR/usr/share/icons/hicolor/256x256/apps/openmindblocks.png" \
-            -e "$APPDIR/usr/bin/launcher" \
+            -e "$APPDIR/usr/bin/frontend" \
             --plugin qt \
             --output appimage
 
