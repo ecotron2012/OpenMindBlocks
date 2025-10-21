@@ -153,12 +153,11 @@ jobs:
             "$HERE/frontend" "$@"
             kill $BACK_PID 2>/dev/null || true
             wait $BACK_PID 2>/dev/null || true
-            EOF
+          EOF
             chmod +x "$APPDIR/usr/bin/launcher"
             LAUNCH_EXEC="launcher"
           fi
 
-              # .desktop (apunta al ejecutable elegido)
           cat > "$APPDIR/usr/share/applications/OpenMindBlocks.desktop" <<EOF
           [Desktop Entry]
           Type=Application
