@@ -75,14 +75,12 @@ jobs:
         
       # --- Build launcher (C++) opcional (si usas el launcher Qt en Linux) ---
       - name: Configure launcher (CMake)
-        working-directory: launcher
         run: >
           cmake -G Ninja -S . -B build/Release
           -DCMAKE_BUILD_TYPE=Release
           -DCMAKE_PREFIX_PATH="$QT_DIR/6.9.2/gcc_64"
 
       - name: Build launcher (CMake)
-        working-directory: launcher
         run: cmake --build build/Release --parallel
 
       # --- Build backend (PyInstaller) ---
@@ -130,7 +128,7 @@ jobs:
           cp "src/runner/dist/backend" "$APPDIR/usr/bin/backend"
           chmod +x "$APPDIR/usr/bin/backend"
 
-          cp "launcher/build/Release/launcher" "$APPDIR/usr/bin/launcher"
+          cp "build/Release/launcher" "$APPDIR/usr/bin/launcher"
           chmod +x "$APPDIR/usr/bin/launcher"
 
           cp "src/runner/.env" "$APPDIR/usr/bin/.env"
