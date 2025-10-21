@@ -118,12 +118,14 @@ jobs:
                    "$APPDIR/usr/share/icons/hicolor/256x256/apps"
 
           # Copia binarios (asegurar +x)
+          cp -a "src/frontend/build/Release/." "$APPDIR/usr/bin/"
           cp "src/frontend/build/Release/frontend" "$APPDIR/usr/bin/frontend"
           chmod +x "$APPDIR/usr/bin/frontend"
 
           cp "src/runner/dist/backend" "$APPDIR/usr/bin/backend"
           chmod +x "$APPDIR/usr/bin/backend"
 
+          cp "src/runner/dist/.env" "$APPDIR/usr/bin/.env"
           # Si tienes launcher Qt en Linux, usa ese; si no, usa script
           if [[ -f "launcher/build/Release/launcher" ]]; then
             cp "launcher/build/Release/launcher" "$APPDIR/usr/bin/launcher"
@@ -184,7 +186,7 @@ jobs:
           tools/linuxdeploy --appdir "$APPDIR" \
             -d "$APPDIR/usr/share/applications/OpenMindBlocks.desktop" \
             -i "$APPDIR/usr/share/icons/hicolor/256x256/apps/openmindblocks.png" \
-            -e "$APPDIR/usr/bin/frontend" \
+            -e "$APPDIR/usr/bin/launcher" \
             --plugin qt \
             --output appimage
 
