@@ -83,7 +83,7 @@ jobs:
           python -m pip install -r requirements.txt
 
       - name: Package backend with PyInstaller (Linux)
-        working-directory: ${{ env.PY_DIR }}
+        working-directory: src/runner
         shell: bash
         env:
           EV3_HOST: ${{ secrets.EV3_HOST }}
