@@ -69,7 +69,6 @@ jobs:
         run: cmake --build build/Release --parallel
         
       # --- Build launcher (C++) opcional (si usas el launcher Qt en Linux) ---
-      # Si de momento usas el launcher.sh, puedes borrar estos dos pasos.
       - name: Configure launcher (CMake)
         working-directory: launcher
         run: >
@@ -106,11 +105,8 @@ jobs:
 
           pyinstaller app.py --name backend --onefile --noconsole --add-data ".env:.env"
 
-          # (Opcional) borra el .env temporal
-          rm -f .env
-
           # Copia al staging (ajusta si tu layout es distinto)
-          install -D -m 755 dist/backend "${APP_OUT}/backend"
+          install -D -m 755 dist/backend "${APPDIR}/backend"
 
       # --- Montar AppDir ---
       - name: Assemble AppDir
