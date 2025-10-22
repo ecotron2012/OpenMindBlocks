@@ -10,12 +10,12 @@
 #include <QPainter>
 #include <QPoint>
 #include <QWidget>
+#include <memory_resource>
 #include <qgraphicsitem.h>
 #include <qjsonobject.h>
 #include <qnamespace.h>
 #include <qobject.h>
 #include <qpixmap.h>
-#include <memory_resource> 
 BlockItem::BlockItem(const QPixmap &skin, bool hasLeftKnob, bool hasRightKnob,
                      int position, string name, QJsonObject params,
                      QGraphicsItem *parent)
@@ -165,15 +165,6 @@ void BlockItem::detachRight() {
   this->update();
 }
 
-void BlockItem::mousePressEvent(QGraphicsSceneMouseEvent *ev) {
-  m_dragStartScene = ev->scenePos();
-  m_grabOffset = ev->pos();
-  // Si este bloque estaba en medio de una cadena y se toma por el medio,
-  // puedes decidir cortar la cadena aquí. Por ahora, si arrastras el “padre”,
-  // arrastra su cadena completa.
-  QGraphicsObject::mousePressEvent(ev);
-}
-
 void BlockItem::moveChainBy(QPointF delta) {
   // mueve this y recorre hacia abajo
   this->moveBy(delta.x(), delta.y());
@@ -181,76 +172,6 @@ void BlockItem::moveChainBy(QPointF delta) {
     n->moveBy(delta.x(), delta.y());
 }
 
-void BlockItem::mouseMoveEvent(QGraphicsSceneMouseEvent *ev) {
-  const QPointF delta = ev->scenePos() - ev->lastScenePos();
-
-  // mover SIEMPRE desde el nodo raíz
-  BlockItem *root = leftmost();
-  // root->moveChainBy(delta);
-
-  // preview verde si hay candidato cerca
-  BlockItem *candidate = findSnapCandidate();
-  const bool preview = (candidate != nullptr);
-
-  if (m_previewSnap != preview) {
-    m_previewSnap = preview;
-    update(); // repinta para cambiar de rojo↔verde
-  }
-
-  setZValue(preview ? 3.0 : 2.0);
-  QGraphicsObject::mouseMoveEvent(ev);
-}
-
-void BlockItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *ev) {
-  setZValue(1.0);
-
-  BlockItem *candidate = findSnapCandidate();
-  if (candidate) {
-    // evita ciclos
-    for (BlockItem *cur = this; cur; cur = cur->m_right)
-      if (cur == candidate) {
-        candidate = nullptr;
-        break;
-      }
-
-    // if (candidate && candidate->hasRightKnob && this->hasLeftKnob)
-    //     candidate->attachRight(this);
-  }
-
-  // apaga el preview y repinta
-  if (m_previewSnap) {
-    m_previewSnap = false;
-    update();
-  }
-
-  // tras conectar/desconectar, actualiza también vecinos para que cambie su
-  // color
-  if (m_left)
-    m_left->update();
-  if (m_right)
-    m_right->update();
-
-  QGraphicsObject::mouseReleaseEvent(ev);
-}
-void BlockItem::dropEvent(QGraphicsSceneDragDropEvent *ev) {
-  if (!ev->mimeData()->hasFormat("application/x-dnditemdata")) {
-    ev->ignore();
-    return;
-  }
-
-  QByteArray itemData = ev->mimeData()->data("application/x-dnditemdata");
-  QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-
-  QPixmap px;
-  QPoint offset;
-  dataStream >> px >> offset;
-
-  // QGraphicsPixmapItem *it = QPixmap>addPixmap(px);
-  // it->setFlags(QGraphicsItem::ItemIsMovable |
-  // QGraphicsItem::ItemIsSelectable); it->setPos(ev->scenePos() -
-  // QPointF(offset));  // posición soltada ev->setDropAction(Qt::CopyAction);
-  // ev->accept();
-}
 BlockItem *BlockItem::findSnapCandidate(qreal maxDistPx) const {
   if (!scene())
     return nullptr;

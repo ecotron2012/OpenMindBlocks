@@ -3,10 +3,12 @@
 
 #include "components/programming_blocks/blockitem/blockitem.h"
 #include <QGraphicsView>
+#include <components/sound_player/sounplayer.h>
 #include <qevent.h>
 #include <qgraphicsview.h>
 #include <qobject.h>
 #include <qtmetamacros.h>
+#include <qurl.h>
 #include <vector>
 using namespace std;
 
@@ -23,13 +25,15 @@ public:
     return QStringLiteral("image/x-puzzle-piece");
   }
 
+  static QString canvasElementMimeType() {
+    return QStringLiteral("image/x-canvas-element");
+  }
   static int getPieceAmount();
   static int getPieceSize();
   static BlockItem *getStartingPiece();
   static BlockItem *getLastPiece();
 
 protected:
-  void dragEnterEvent(QDragEnterEvent *event) override;
   void dragMoveEvent(QDragMoveEvent *event) override;
   void dropEvent(QDropEvent *event) override;
   void resizeEvent(QResizeEvent *event) override;
@@ -41,6 +45,10 @@ protected:
   BlockItem *startingPiece;
   BlockItem *lastPiece;
   vector<BlockItem *> pieces;
+  SoundPlayer *addPieceSound =
+      new SoundPlayer(this);
+  SoundPlayer *clearCanvasSound =
+      new SoundPlayer(this);
 
 public slots:
   void runProgram();

@@ -36,10 +36,11 @@ add_subdirectory(components/preview_blocks)
 add_subdirectory(components/programming_blocks)
 add_subdirectory(components/utils)
 add_subdirectory(components/widgets)
+add_subdirectory(components/sound_player)
 set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/AppIcon.ico")
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-	find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network)
+	find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network Multimedia)
 
     qt_add_executable(frontend
         MANUAL_FINALIZATION
@@ -69,7 +70,7 @@ else()
 endif()
 
 target_link_libraries(frontend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-target_link_libraries(frontend PRIVATE Qt6::Core Qt6::Widgets Qt6::Network)
+target_link_libraries(frontend PRIVATE Qt6::Core Qt6::Widgets Qt6::Network Qt6::Multimedia)
 
 
 # Agrega libreria externa json
@@ -78,7 +79,7 @@ target_include_directories(frontend PRIVATE
 )
 
 #Add external libraries here (if using git submodule)
-target_link_libraries(frontend PRIVATE components drag_widget graphics http json_converter preview_blocks programming_blocks utils widgets)
+target_link_libraries(frontend PRIVATE components drag_widget graphics http json_converter preview_blocks programming_blocks utils widgets sound_player)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

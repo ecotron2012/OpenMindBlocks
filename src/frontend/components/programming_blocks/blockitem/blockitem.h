@@ -42,10 +42,6 @@ public:
   QJsonObject getParams();
 
 protected:
-  void mousePressEvent(QGraphicsSceneMouseEvent *ev) override;
-  void mouseMoveEvent(QGraphicsSceneMouseEvent *ev) override;
-  void mouseReleaseEvent(QGraphicsSceneMouseEvent *ev) override;
-  void dropEvent(QGraphicsSceneDragDropEvent *ev) override;
   QVariant itemChange(GraphicsItemChange change,
                       const QVariant &value) override;
   void setParams(QJsonObject &p);

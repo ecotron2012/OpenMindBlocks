@@ -5,8 +5,10 @@
 #include <QDragEnterEvent>
 #include <QGraphicsScene>
 #include <QMimeData>
+#include <QtMultimedia/QMediaPlayer>
 #include <components/http/httprequest.h>
 #include <cstdlib>
+#include <filesystem>
 #include <memory>
 #include <qjsondocument.h>
 #include <qlogging.h>
@@ -21,6 +23,9 @@ using namespace std;
 ProgramCanvas::ProgramCanvas(int width, int height, QWidget *parent)
     : QGraphicsView(parent), m_PieceSize(80), startingPiece(nullptr) {
   // Configurar la escena
+  addPieceSound->setResource(":/sounds/pop.mp3");
+  clearCanvasSound->setResource(":/sounds/scribble.mp3");
+  clearCanvasSound->setVolume(1);
   auto *scene = new QGraphicsScene(this);
   scene->setSceneRect(0, 0, width, height);
   setScene(scene);
@@ -45,8 +50,9 @@ void ProgramCanvas::addPiece(const QString &name, const QPoint &location) {
   // Aquí puedes usar tu BlockItem en lugar de un pixmap plano
   qDebug() << "Nombre siendo pasado: " << name;
   BlockItem *piece = BLOCK_FACTORY.at(name.toUtf8().constData())(QJsonObject{});
-  piece->setFlags(QGraphicsItem::ItemIsMovable |
-                  QGraphicsItem::ItemIsSelectable);
+  // TODO: Enable when piece reordering is implemented
+  // piece->setFlags(QGraphicsItem::ItemIsMovable |
+  //                 QGraphicsItem::ItemIsSelectable);
   scene()->addItem(piece);
   const QPointF targetScenePt = mapToScene(location);
   // Guardar referencia si es la primera pieza
@@ -64,14 +70,7 @@ void ProgramCanvas::addPiece(const QString &name, const QPoint &location) {
   // Add BlockItem to pieces array
   this->pieces.push_back(piece);
   this->pieceAmount++;
-}
-
-void ProgramCanvas::dragEnterEvent(QDragEnterEvent *event) {
-  if (event->mimeData()->hasFormat(puzzleMimeType())) {
-    event->acceptProposedAction();
-  } else {
-    event->ignore();
-  }
+  addPieceSound->playSound();
 }
 
 void ProgramCanvas::dragMoveEvent(QDragMoveEvent *event) {
@@ -139,4 +138,5 @@ void ProgramCanvas::clearCanvas() {
   startingPiece = nullptr;
   lastPiece = nullptr;
   pieceAmount = 0;
+  clearCanvasSound->play();
 }
