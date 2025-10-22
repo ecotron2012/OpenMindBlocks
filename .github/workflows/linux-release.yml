@@ -42,7 +42,8 @@ jobs:
                                   libxcb-render0 libxcb-shm0 libxcb-xfixes0 libxcb-randr0 libxcb-sync1 libxcb-xkb1 \
                                   libx11-xcb1 libxrender1 libxi6 libxrandr2 \
                                   libsm6 libice6 \
-                                  libfontconfig1 libfreetype6 libglib2.0-0
+                                  libfontconfig1 libfreetype6 libglib2.0-0 libpulse-dev libpulse0 \
+                                  libasound2-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev
 
       - name: Install aqt + linuxdeploy tools
         shell: bash
