@@ -52,7 +52,7 @@ jobs:
           python -m pip install --upgrade pip aqtinstall pyinstaller
 
           # Qt (sin archives ni qt_base)
-          python -m aqt install-qt linux desktop 6.9.2 linux_gcc_64 -O "$GITHUB_WORKSPACE/Qt"
+          python -m aqt install-qt linux desktop 6.9.2 linux_gcc_64 --modules qtmultimedia -O "$GITHUB_WORKSPACE/Qt"
 
           echo "$GITHUB_WORKSPACE/Qt/6.9.2/gcc_64/bin" >> $GITHUB_PATH
 
