@@ -18,11 +18,12 @@ Open Programming Blocks for the masses.
 
 This project is meant to serve as a simplified interface for programming LEGO© Mindstorms EV3 robots. It uses symbols instead of complex language to convey movement options and actions, which makes suitable for teaching in younger ages. This project was made as part of my thesis project, which is focused on teaching computational thinking skills to children with Down Syndrome.
 
+The program is composed of an interface made with Qt, and a backend made in Flask to communicate with and send the constructed program in the interface to the EV3.
+
 The programming instructions are represented by puzzle pieces, and are vertically connected to each other, making a sequence of instructions or program. This concept is inspired by works such as Scratch Jr. and KIBO programming blocks.
 
 <img width="1220" height="738" alt="image" src="https://github.com/user-attachments/assets/a4f0a341-4b8e-43a3-ad6e-7ba7b323c013" />
 
-The program consists of an interface made with Qt, and a backend made in Flask to communicate with and send the constructed program in the interface to the EV3.
 
 ## Installation
 
@@ -43,8 +44,19 @@ You can download the executable/installer for your operating system from the [Re
 If you wish to run it from the source code, you need the following tools:
 - Python 3.9+
 - Qt 6.9.2
-- A Mindstorms EV3 robot loaded with ev3dev. You can follow [this tutorial](https://www.ev3dev.org/docs/getting-started/) to learn how to install .
+- A Mindstorms EV3 robot loaded with ev3dev, connected to your computer and network via USB. You can follow [this tutorial](https://www.ev3dev.org/docs/getting-started/) to learn how to install the ev3dev image on your EV3 device, and [this tutorial](https://www.ev3dev.org/docs/tutorials/connecting-to-the-internet-via-usb/) to learn how to connect your device to your network via USB.
 
+To load the backend, first install the required libraries
+```bash
+python -m pip install -r requirements.txt
+```
+Then create a .env file with tne following contents:
+```
+EV3_USER=robot
+EV3_HOST=ev3dev # or ev3dev.local if you're on linux
+EV3_PASS=maker
+```
+You can change these values to match the information of your EV3 device (if you changed from the default values)
 ## Quick start
 
 Nobody wants to read long explanations about how to use your software before they can try it, especially while they are still deciding _whether_ to try it. A [Quick start](#quick-start) section right after the installation instructions can help readers figure out what's involved.
