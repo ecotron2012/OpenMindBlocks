@@ -131,7 +131,7 @@ There are currently 9 programming blocks, each with a different purpose:
 
 ## Known issues and limitations
 
-This project was tested with the [COR3 model](https://ev3lessons.com/RobotDesigns/instructions/COR3.pdf) designed by Michael Buss Andersson, built using the LEGO Mindstorms EV3 Education Core Set (45544).
+This project was tested with the [COR3 model](https://ev3lessons.com/RobotDesigns/instructions/COR3.pdf) designed by Michael Buss Andersen, built using the LEGO Mindstorms EV3 Education Core Set (45544).
 
 This project also assumes that the color sensor is connected to the port 1 of the EV3, and the left and right motor are connected to the B and C ports, respectively. Plugging them in any other port will make the program stop working.
 
