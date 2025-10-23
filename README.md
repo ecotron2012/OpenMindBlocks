@@ -12,10 +12,7 @@ Open Programming Blocks for the masses.
 * [Quick start](#quick-start)
 * [Usage](#usage)
 * [Known issues and limitations](#known-issues-and-limitations)
-* [Getting help](#getting-help)
-* [Contributing](#contributing)
 * [License](#license)
-* [Acknowledgments](#acknowledgments)
 
 
 ## Introduction
