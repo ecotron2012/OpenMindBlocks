@@ -3,7 +3,7 @@
 [Setup]
 AppId={{3112F31B-25A0-48B5-B753-BBABC94124C0}}
 AppName=OpenMindBlocks
-AppVersion=0.5.0
+AppVersion=1.0.0
 AppPublisher=Cristóbal Carreño
 DefaultDirName={userappdata}\Programs\OpenMindBlocks
 DefaultGroupName=OpenMindBlocks
