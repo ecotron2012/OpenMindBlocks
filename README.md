@@ -1,4 +1,8 @@
 # OpenMindBlocks: Open Mindstorms Programming Blocks
+
+<img width="4380" height="1024" alt="logo" src="https://github.com/user-attachments/assets/1b276d9b-c001-46a7-9561-e790720d38d0" />
+
+
 Open Programming Blocks for the masses.
 
 ## Table of contents
@@ -27,106 +31,117 @@ The programming instructions are represented by puzzle pieces, and are verticall
 
 ## Installation
 
-Begin this [Installation](#installation) section by describing prerequisites needed to use the software. Examples include required hardware, operating systems, software frameworks, compilers, and/or interpreters.
-
-Next, provide step-by-step instructions for installing your software, preferably with examples of commands that can be copy-pasted by readers into their computing environments. If your software can be installed using common installers or package managers (e.g., `pip`, `npm`, `brew`, `apt`, etc.), illustrate how it can be done using [code blocks](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-and-highlighting-code-blocks) in the Markdown file so that it's clear to readers. For example,
-
-```sh
-pip install yoursoftware
-```
-
-For installation methods that don't involve command lines, providing screenshots along with written instructions can help readers figure out what they need to do.
-
-Subsections may be appropriate within this [Installation](#installation) section for different operating systems or particularly complicated installations. Keep in mind, though, that the more complicated the installation process is, the more likely that users will encounter difficulties and give up.
-
 You can download the executable/installer for your operating system from the [Releases](https://github.com/ecotron2012/OpenMindBlocks/releases) page.
 
 If you wish to run it from the source code, you need the following tools:
 - Python 3.9+
+  - Main dependencies used:
+      - Flask
+      - Paramiko
+      - pyBricks, for running the programs inside the EV3
 - Qt 6.9.2
 - A Mindstorms EV3 robot loaded with ev3dev, connected to your computer and network via USB. You can follow [this tutorial](https://www.ev3dev.org/docs/getting-started/) to learn how to install the ev3dev image on your EV3 device, and [this tutorial](https://www.ev3dev.org/docs/tutorials/connecting-to-the-internet-via-usb/) to learn how to connect your device to your network via USB.
+  The robot must have:
+    - A color sensor connected to the 1 port
+    - A left and right motor connected to the B and C ports, respectively.
 
-To load the backend, first install the required libraries
+To load the backend, first create and activate a virtual environment in the src/runner folder:
+```bash
+python -m venv .venv
+source .venv/bin/activate # Linux
+.venv/Scripts/Activate.ps1 # Powershell on Windows
+```
+Then install the required libraries:
 ```bash
 python -m pip install -r requirements.txt
 ```
 Then create a .env file with tne following contents:
 ```
 EV3_USER=robot
-EV3_HOST=ev3dev # or ev3dev.local if you're on linux
+EV3_HOST=ev3dev # or ev3dev.local if you're on Linux
 EV3_PASS=maker
 ```
 You can change these values to match the information of your EV3 device (if you changed from the default values)
-## Quick start
 
-Nobody wants to read long explanations about how to use your software before they can try it, especially while they are still deciding _whether_ to try it. A [Quick start](#quick-start) section right after the installation instructions can help readers figure out what's involved.
-
-Explain the minimal configuration (if any) required to use the software, then provide the simplest example or command that demonstrates actual functionality implemented by your software. If your software is command-line oriented, provide examples (again in [code blocks](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-and-highlighting-code-blocks) in the Markdown file).
-
-```sh
-yoursoftware argument1 argument2
+Now, run the flask backend with
+```bash
+flask --app app.py run --host=0.0.0.0 # add --debug if you're doing development
 ```
 
-If your software is not command-line oriented, providing static screenshots annotated with arrows or other guidance is a good approach to showing readers how to use the software. The temptation to use embedded videos or animated GIFs here may be strong, but it is better to resist it, or at least to use them only as a way to _augment_ and not replace written explanations. It takes people longer to watch a video than to skim textual descriptions on a page, which can annoy potential users; moreover, some users turn off video players in their browsers and may not even see the embedded video content.
+To run the frontend, load the /src/frontend/CMakeLists.txt on Qt Studio, and run it from there.
+
+## Quick start
+
+To create a program, begin by click and dragging the green block (the 'start program') block into the canvas
+<img width="1818" height="244" alt="Screenshot 2025-10-22 183633" src="https://github.com/user-attachments/assets/0bb36695-7d34-498e-8587-b988c74cc0b3" />
+<img width="1815" height="874" alt="Screenshot 2025-10-22 183728" src="https://github.com/user-attachments/assets/5d5fffd9-7f8b-4233-906b-803d9104d9af" />
+
+To create a simple program that moves the robot forward, drag and drop the 'move forward' piece to the canvas, then the 'end program' piece to finish the program execution.
+<img width="1753" height="233" alt="Screenshot 2025-10-22 184156" src="https://github.com/user-attachments/assets/4fb972ac-dc61-4300-a8e4-99a9f7028e22" />
+<img width="651" height="328" alt="Screenshot 2025-10-22 184137" src="https://github.com/user-attachments/assets/8b7cd33b-7c6c-43fe-8980-e24635edb3e8" />
+
+To execute the program, click on the play button located on the upper right corner:
+<img width="1200" height="422" alt="Screenshot 2025-10-22 184446" src="https://github.com/user-attachments/assets/99cfd9a4-320b-46b0-afd9-2b77a948d73e" />
+And you will see your robot moving forward **(Remember to have the robot connected to your device via usb)**
+
+You can experiment different combinations using the other blocks available on the bottom container.
+
+To clear the canvas, click on the red button located on the upper left corner.
+
+## Demo
+[demo2.webm](https://github.com/user-attachments/assets/dd38f2dc-4f8a-4512-9ef1-d84efe90101a)
 
 
 ## Usage
 
-The [Usage](#usage) section would explain in more detail how to run the software, what kind of output or behavior to expect, and so on. It would cover basic operations as well as more advanced uses.
+### Programming blocks
 
-Some of the information in this section will repeat what is in the [Quick start](#quick-start) section. This repetition is unavoidable, but also, not entirely undesirable: the more detailed explanations in this [Usage](#usage) section can help provide more context as well as clarify possible ambiguities that may exist in the more concise [Quick start](#quick-start) section.
+There are currently 9 programming blocks, each with a different purpose:
+- Start program block: this block tells the robot that a new program is about to be loaded. It contains all the necessary imports and objects needed to start the program, so it must always be the first block of your sequence.
+<img width="128" height="128" alt="start_program" src="https://github.com/user-attachments/assets/f62f8794-ca52-4383-b11d-2fa06d009af7" />
 
-If your software is complex and has many features, it may be better to create a dedicated website for your documentation (e.g., in [GitHub Pages](https://pages.github.com), [Read the Docs](https://about.readthedocs.com), or similar) rather than to cram everything into a single linear README file. In that case, the [Usage](#usage) section can be shortened to just a sentence or two pointing people to your documentation site.
+- Move forward block: Moves the robot forward according to it's orientation.
+  
+  <img width="128" height="128" alt="move_forward" src="https://github.com/user-attachments/assets/08bf7b1e-c5a9-466f-8395-424278f0b123" />
+  
+- Move backward block: Makes the robot move backward.
+  
+  <img width="128" height="128" alt="move_backward" src="https://github.com/user-attachments/assets/a6e2a718-c90e-4bcc-a51e-c43b1bb12b21" />
 
+- Turn left: Rotates the robot 90 degrees in a counter-clockwise motion.
+  
+  <img width="128" height="128" alt="turn_left" src="https://github.com/user-attachments/assets/bba9ef6e-edb5-49a0-a7e9-76ff18492cd5" />
 
-### Basic operation
+- Turn right: Rotates the robot 90 degrees in a clockwise motion.
+  
+  <img width="128" height="128" alt="turn_right" src="https://github.com/user-attachments/assets/853f4472-7fe8-49ad-92ad-0f39a2d53162" />
 
-When learning how to use anything but the simplest software, new users may appreciate beginning with basic features and modes of operation. If your software has a help system of some kind (e.g., in the form of a command-line flag such as `--help`, or a menu item in a GUI), explaining it is an excellent starting point for this section.
+- If color block: Makes the robot perform a series of actions if the color sensor detects a certain color. Keep in mind that the flow of execution will stop until the sensor reads the specified color when the program reaches this block.
+  
+  <img width="128" height="128" alt="if_color_sensor" src="https://github.com/user-attachments/assets/96350b5e-05f2-4c9e-acad-bd029a4effd9" />
 
-The basic approach for using this README file is as follows:
+- Repeat/while block: Makes the robot repeat a serires of actions up to 10 times.
+  
+  <img width="128" height="128" alt="while_block" src="https://github.com/user-attachments/assets/3da9c240-78d3-46b3-b344-ed3788c8be05" />
 
-1. Copy the [README source file](https://raw.githubusercontent.com/mhucka/readmine/main/README.md) to your repository
-2. Delete the body text but keep the section headings
-3. Replace the title heading (the first line of the file) with the name of your software
-4. Save the resulting skeleton file in your version control system
-5. Continue by writing your real README content in the file
+- End condition block: Its purpose is to indicate where the instruction sequence of an if or while block ends, preventing execution errors.
 
-The first paragraph in the README file (under the title at the top) should summarize your software in a concise fashion, preferably using no more than one or two sentences as illustrated by the circled text in the figure below.
+  <img width="128" height="128" alt="cond_block_end" src="https://github.com/user-attachments/assets/cb5be40e-8d2f-4418-a21a-2a3c17c0e3c7" />
 
-<p align="center">
-<img alt="Screenshot showing the top portion of this file on the web." width="80%" src="https://raw.githubusercontent.com/mhucka/readmine/main/.graphics/screenshot-top-paragraph.png"><br>
-<em>Figure: Screenshot showing elements of the top portion of this file.</em>
-</p>
+- End program block: It marks a symbolic representation of the end of the program and thus its insertion is not required.
 
-The space under the first paragraph and _before_ the [Table of Contents](#table-of-contents) is a good location for optional [badges](https://github.com/badges/shields), which are small visual tokens commonly used on GitHub repositories to communicate project status, dependencies, versions, DOIs, and other information. (Two example badges are shown in the figure above, under the circled text.) The particular badges and colors you use depend on your project and personal tastes.
-
-
-### More options
-
-Some projects need to communicate additional information to users and can benefit from additional sections in the README file. It's difficult to give specific instructions here – a lot depends on your software, your intended audience, etc. Use your judgment and ask for feedback from users or colleagues to help figure out what else is worth explaining.
-
+  <img width="128" height="128" alt="stop_program" src="https://github.com/user-attachments/assets/44f4c526-ce7a-4ede-b9c7-fca9796a0e97" />
 
 ## Known issues and limitations
 
-In this section, summarize any notable issues and/or limitations of your software. If none are known yet, this section can be omitted (and don't forget to remove the corresponding entry in the [Table of Contents](#table-of-contents) too); alternatively, you can leave this section in place and write something along the lines of "none are known at this time".
+This project was tested with the [COR3 model](https://ev3lessons.com/RobotDesigns/instructions/COR3.pdf) designed by Michael Buss Andersson, built using the LEGO Mindstorms EV3 Education Core Set (45544).
 
+This project also assumes that the color sensor is connected to the port 1 of the EV3, and the left and right motor are connected to the B and C ports, respectively. Plugging them in any other port will make the program stop working.
 
-## Getting help
-
-Inform readers how they can contact you, or at least how they can report problems they may encounter. This could take the form of a request to use the issue tracker on your repository. Some projects have associated discussion forums or mailing lists, and this section is a good place to mention those.
-
-
-## Contributing
-
-If your project accepts open-source contributions, this is where you can welcome contributions and explain to readers how they can go about it. Mention the [`CONTRIBUTING.md`](CONTRIBUTING.md) file in your repository, if you have one.
-
+The backend uses the port 5000 by default, so make sure it is free before launching the program.
 
 ## License
 
-This section should state any copyright asserted on the project materials as well as the terms of use for the software, files and other materials found in the project repository.
-
-_This_ README file is itself distributed under the terms of the [Creative Commons 1.0 Universal license (CC0)](https://creativecommons.org/publicdomain/zero/1.0/). The license applies to this file and other files in the [GitHub repository](http://github.com/mhucka/readmine) hosting this file. This does _not_ mean that you, as a user of this README file in your software project, must also use CC0 license!  You may use whatever license for your work you prefer, or whatever you are required to use by your employer or sponsor.
+This project is distributed under the terms of the GNU General Public License v3.0 (GPL-3.0). This means that anyone is free to use, modify, and distribute the software, provided that all derivative works remain open-source under the same license and proper credit is given to the original authors. For more details, please refer to the [GNU GPL v3.0 license text](https://www.gnu.org/licenses/gpl-3.0.html).
 
 
-## Demo
-[demo.webm](https://github.com/user-attachments/assets/bc69bd31-40a5-4a6d-9dcc-1aee600b81a9)
