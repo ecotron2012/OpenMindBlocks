@@ -132,7 +132,20 @@ jobs:
         shell: pwsh
         run: |
           $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-          & "$iscc" "/DAppVersion=$env:APP_VERSION" "$env:ISS"
+          & "$iscc" `
+            "/DAppVersion=$env:APP_VERSION" `
+            "/O$env:APP_OUT" `
+            "/FOpenMindBlocks-Setup-$env:APP_VERSION" `
+            "$env:ISS"
+
+      - name: Verify installer location
+        shell: pwsh
+        run: |
+          Write-Host "Looking in $env:APP_OUT"
+          Get-ChildItem -File "$env:APP_OUT" | Format-Table Name,Length,LastWriteTime
+          Write-Host "Searching entire workspace for any installer EXE:"
+          Get-ChildItem -Path "$env:GITHUB_WORKSPACE" -Recurse -Filter "OpenMindBlocks-Setup*.exe" |
+            Select-Object FullName | Format-Table -AutoSize
 
       - name: Upload installer
         uses: actions/upload-artifact@v4
@@ -145,18 +158,20 @@ jobs:
         shell: pwsh
         run: |
           $name = "OpenMindBlocks-Setup-$env:APP_VERSION.exe"
-          Get-FileHash ".\$name" -Algorithm SHA256 | ForEach-Object { $_.Hash } |
-            Set-Content ".\$name.sha256"
+          $exe  = Join-Path $env:APP_OUT $name
+          $sha  = Join-Path $env:APP_OUT "$name.sha256"
+          Get-FileHash $exe -Algorithm SHA256 | ForEach-Object { $_.Hash } | Set-Content $sha
+          Write-Host "SHA256 written to $sha"
 
       - name: Attach artifacts to existing release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.release.tag_name }}            
-          name: ${{ github.event.release.name }}                      
-          draft: ${{ github.event.release.draft }}         
-          prerelease: ${{ github.event.release.prerelease }}          
+          tag_name: ${{ github.event.release.tag_name }}
+          name: ${{ github.event.release.name }}
+          draft: ${{ github.event.release.draft }}
+          prerelease: ${{ github.event.release.prerelease }}
           files: |
-            OpenMindBlocks-Setup-${{ env.APP_VERSION }}.exe
-            OpenMindBlocks-Setup-${{ env.APP_VERSION }}.sha256
+            ${{ env.APP_OUT }}/OpenMindBlocks-Setup-${{ env.APP_VERSION }}.exe
+            ${{ env.APP_OUT }}/OpenMindBlocks-Setup-${{ env.APP_VERSION }}.exe.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
