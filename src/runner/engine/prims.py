@@ -39,7 +39,7 @@ def move_fwd():
     inst = """
 _thread.start_new_thread(play_sound, (SoundFile.SPEED_UP,))
 ev3.screen.load_image(ImageFile.UP)
-robot.straight(230)
+robot.straight(200)
 wait(250)
     """
     return inst
@@ -48,7 +48,7 @@ def move_bwd():
     inst = """
 _thread.start_new_thread(play_sound, (SoundFile.BACKING_ALERT,))
 ev3.screen.load_image(ImageFile.DOWN)
-robot.straight(-230)
+robot.straight(-200)
 wait(1000)
     """
     return inst
