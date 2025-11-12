@@ -39,7 +39,7 @@ def move_fwd():
     inst = """
 _thread.start_new_thread(play_sound, (SoundFile.SPEED_UP,))
 ev3.screen.load_image(ImageFile.UP)
-robot.straight(100)
+robot.straight(230)
 wait(250)
     """
     return inst
@@ -48,7 +48,7 @@ def move_bwd():
     inst = """
 _thread.start_new_thread(play_sound, (SoundFile.BACKING_ALERT,))
 ev3.screen.load_image(ImageFile.DOWN)
-robot.straight(-100)
+robot.straight(-230)
 wait(1000)
     """
     return inst
@@ -57,7 +57,7 @@ def turn_left():
     inst = """
 _thread.start_new_thread(play_sound, (SoundFile.MOTOR_IDLE,))
 ev3.screen.load_image(ImageFile.MIDDLE_LEFT)
-robot.turn(-130)
+robot.turn(-150)
 wait(250)
 """
     return inst
@@ -66,7 +66,7 @@ def turn_right():
     inst = """
 _thread.start_new_thread(play_sound, (SoundFile.MOTOR_IDLE,))
 ev3.screen.load_image(ImageFile.MIDDLE_RIGHT)
-robot.turn(130)
+robot.turn(150)
 wait(250)
 """
     return inst
