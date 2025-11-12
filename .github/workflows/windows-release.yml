@@ -117,6 +117,13 @@ jobs:
           "@
           Set-Content -Path ".\dist\release\.env" -Value $content -Encoding UTF8
 
+      - name: Compute version from tag
+        shell: pwsh
+        run: |
+          $tag = "${{ github.event.release.tag_name || github.ref_name }}"
+          $version = $tag.TrimStart('v')
+          echo "APP_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append
+
       - name: Install Inno Setup (ISCC)
         run: |
           choco install innosetup --yes
@@ -125,7 +132,7 @@ jobs:
         shell: pwsh
         run: |
           $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-          & "$iscc" "/DAppVersion=${{ github.ref_name }}" "$env:ISS"
+          & "$iscc" "/DAppVersion=$env:APP_VERSION" "$env:ISS"
 
       - name: Upload installer
         uses: actions/upload-artifact@v4
@@ -137,9 +144,9 @@ jobs:
       - name: Generate Checksum
         shell: pwsh
         run: |
-          Get-FileHash ".\OpenMindBlocks-Setup.exe" -Algorithm SHA256 |
-            ForEach-Object { $_.Hash + "  OpenMindBlocks-Setup.exe" } |
-            Set-Content ".\OpenMindBlocks-Setup.sha256"
+          $name = "OpenMindBlocks-Setup-$env:APP_VERSION.exe"
+          Get-FileHash ".\$name" -Algorithm SHA256 | ForEach-Object { $_.Hash } |
+            Set-Content ".\$name.sha256"
 
       - name: Attach artifacts to existing release
         uses: softprops/action-gh-release@v2
@@ -149,7 +156,7 @@ jobs:
           draft: ${{ github.event.release.draft }}         
           prerelease: ${{ github.event.release.prerelease }}          
           files: |
-            OpenMindBlocks-Setup.exe
-            OpenMindBlocks-Setup.sha256
+            OpenMindBlocks-Setup-${{ env.APP_VERSION }}.exe
+            OpenMindBlocks-Setup-${{ env.APP_VERSION }}.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

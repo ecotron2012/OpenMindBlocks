@@ -1,16 +1,20 @@
 ; OpenMindBlocks.iss — instalador Inno Setup (por-usuario, sin admin)
 
+#ifndef AppVersion
+  #define AppVersion "1.0.0"   ; valor por defecto si no viene del workflow
+#endif
+
 [Setup]
 AppId={{3112F31B-25A0-48B5-B753-BBABC94124C0}}
 AppName=OpenMindBlocks
-AppVersion=1.0.0
+AppVersion={#AppVersion}
 AppPublisher=Cristóbal Carreño
 DefaultDirName={userappdata}\Programs\OpenMindBlocks
 DefaultGroupName=OpenMindBlocks
 DisableDirPage=yes
 DisableProgramGroupPage=yes
 OutputDir=.
-OutputBaseFilename=OpenMindBlocks-Setup
+OutputBaseFilename=OpenMindBlocks-Setup-{#AppVersion}
 Compression=lzma2
 SolidCompression=yes
 PrivilegesRequired=lowest
