@@ -138,8 +138,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: OpenMindBlocks-Setup
-          path: |
-            **\OpenMindBlocks-Setup.exe
+          path: ${{ env.APP_OUT }}/OpenMindBlocks-Setup-${{ env.APP_VERSION }}.exe
+          if-no-files-found: error
 
       - name: Generate Checksum
         shell: pwsh
